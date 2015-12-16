@@ -6,7 +6,7 @@ Andrea Velasco<br>
 Miguel Rib<br>
 Raúl Gómez
 
-<b>Code folder</b>
+<b>block1 folder</b>
 
  <ul>
   <li>highway</li>
@@ -16,6 +16,7 @@ Raúl Gómez
     </ul>
   <li>output</li>
   <li>results</li>
+  <li>results_testAB</li>
   <li>testing</li>
   <li>training</li>
       <ul>
