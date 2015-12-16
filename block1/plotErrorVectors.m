@@ -1,5 +1,7 @@
 function [  ] = plotErrorVectors( fileNameGT, fileNameEstimation )
 %Plots OF error vectors
+%Input: GT and estimation optical flow filenames.
+%Displays motion vector errors 
 
 %Read files
 F_gt = flow_read(fileNameGT);

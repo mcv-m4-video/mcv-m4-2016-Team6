@@ -1,4 +1,8 @@
 function [  ] = showError( flowGTfilename, flowEstfilename )
+%Plot optical flow Error
+%Input: GT and estimation optical flow filenames
+%Displays optical flows, error and pixel hystogram error
+
 
 disp('Load and show optical flow field ... ');
 F_est = flow_read(flowEstfilename);
