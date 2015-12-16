@@ -1,24 +1,36 @@
-%
-% WEEK 1 -> Task 3
-%
 % Path to Dataset Images
-DirDS = 'dataset/baseline/highway/input/';
+DirDS = 'highway/input/';
 % Load images from dataset
-DirGT = 'dataset/baseline/highway/groundtruth/';
-% Load the results of Test A
-DirTA = 'results_testAB_changedetection/testA/';
-% Load the results of Test B
-DirTB = 'results_testAB_changedetection/testB/';
+DirGT = 'highway/groundtruth/';
+% Path to the results of the tests
+DirTATB = 'results/';
+
 % Load a list of the files within the folders
 ImDS = ListFiles( DirDS );
 ImGT = ListFiles( DirGT );
-ImTA = ListFiles( DirTA );
-ImTB = ListFiles( DirTB );
+ImTATB = ListFiles( DirTATB );
+
 % Count the number of files
 NumDS = numel(ImDS);
 NumGT = numel(ImGT);
+NumTATB = numel(ImTATB);
+
+%% Obtain filenames
+ImTA = [];
+ImTB = [];
+for i = 1:NumTATB
+    name = ImTATB(i).name;
+    if strncmp('test_A', name, 6) == 1
+        ImTA = [ImTA; cellstr(name)];
+    end
+    if strncmp('test_B', name, 6) == 1
+        ImTB = [ImTB; cellstr(name)];
+    end
+end
+
 NumTA = numel(ImTA);
 NumTB = numel(ImTB);
+%%
 
 % Print Info
 Message = sprintf('Number of images in TA : %d',NumTA);
@@ -33,12 +45,11 @@ A_F1_Frames = []; B_F1_Frames = [];     % F1-Score frame by frame, both test A a
 A_TP_Frames = []; B_TP_Frames = [];     % True Positives pixels frame by frame, both test A and B
 FG_Frames = [];                         % Foreground pixels frame by frame, both test A and B
 
-for index=1:size(ImGT,1)
+for index=1:size(ImTA,1)
     % Read frames
-    im = double(imread(strcat(DirDS,ImDS(index).name)))/255;
-    im_gt = double(imread(strcat(DirGT,ImGT(index).name)))/255;
-    im_ta = double(imread(strcat(DirTA,ImTA(index).name)));
-    im_tb = double(imread(strcat(DirTB,ImTB(index).name)));
+    im_gt = double(imread(strcat(DirGT,ImGT(index+1200).name)))/255;
+    im_ta = double(imread(strcat(DirTATB,char(ImTA(index)))));
+    im_tb = double(imread(strcat(DirTATB,char(ImTB(index)))));
     
     % Perform comparison between test A and ground truth
     [pixelTP, pixelFP, pixelFN, pixelTN] = PerformanceAccumulationPixel(im_ta, im_gt);
