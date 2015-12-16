@@ -6,7 +6,7 @@ DirDS = 'highway/input/';
 % Path to images from dataset
 DirGT = 'highway/groundtruth/';
 % Path to the results of the tests
-DirTATB = 'results/';
+DirTATB = 'results_testAB/';
 
 % Load a list of the files within the folders
 ImDS = ListFiles( DirDS );
