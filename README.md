@@ -16,6 +16,13 @@ Raúl Gómez
     </ul>
   <li>output</li>
   <li>results</li>
+  <li>testing</li>
+  <li>training</li>
+      <ul>
+      <li>flow_noc</li>
+      <li>image_0</li>
+      <li>etc...</li>
+    </ul>
   <li>...code files here...</li>
 </ul> 
 
