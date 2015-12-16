@@ -1,28 +1,39 @@
-%
-% WEEK 1 -> Task 2
-%
-
 % Path to place generated images
 DirOUT = 'output/';
 
 % Path to Dataset Images
-DirDS = 'dataset/baseline/highway/input/';
+DirDS = 'highway/input/';
 % Path to images from dataset
-DirGT = 'dataset/baseline/highway/groundtruth/';
-% Path to the results of Test A
-DirTA = 'results_testAB_changedetection/testA/';
-% Path to the results of Test B
-DirTB = 'results_testAB_changedetection/testB/';
+DirGT = 'highway/groundtruth/';
+% Path to the results of the tests
+DirTATB = 'results/';
+
 % Load a list of the files within the folders
 ImDS = ListFiles( DirDS );
 ImGT = ListFiles( DirGT );
-ImTA = ListFiles( DirTA );
-ImTB = ListFiles( DirTB );
+ImTATB = ListFiles( DirTATB );
+
 % Count the number of files
 NumDS = numel(ImDS);
 NumGT = numel(ImGT);
+NumTATB = numel(ImTATB);
+
+%% Obtain filenames
+ImTA = [];
+ImTB = [];
+for i = 1:NumTATB
+    name = ImTATB(i).name;
+    if strncmp('test_A', name, 6) == 1
+        ImTA = [ImTA; cellstr(name)];
+    end
+    if strncmp('test_B', name, 6) == 1
+        ImTB = [ImTB; cellstr(name)];
+    end
+end
+
 NumTA = numel(ImTA);
 NumTB = numel(ImTB);
+%%
 
 % Print Info
 Message = sprintf('Number of images in Dataset : %d', NumDS);
@@ -41,15 +52,15 @@ A_TP = 0; A_FP = 0; A_FN = 0; A_TN = 0;
 B_TP = 0; B_FP = 0; B_FN = 0; B_TN = 0;
 
 
-for index=1:size(ImGT,1)
+for index=1:size(ImTA,1)
     Message = sprintf('Image : %s : %d / %d', ImGT(index).name, index, NumGT);
     disp(Message);
     
     % Load frames
-    im = double(imread(strcat(DirDS,ImDS(index).name)))/255;
-    im_gt = double(imread(strcat(DirGT,ImGT(index).name)))/255;
-    im_ta = double(imread(strcat(DirTA,ImTA(index).name)));
-    im_tb = double(imread(strcat(DirTB,ImTB(index).name)));
+    im = double(imread(strcat(DirDS,ImDS(index+1200).name)))/255;
+    im_gt = double(imread(strcat(DirGT,ImGT(index+1200).name)))/255;
+    im_ta = double(imread(strcat(DirTATB,char(ImTA(index)))));
+    im_tb = double(imread(strcat(DirTATB,char(ImTB(index)))));
 
     fig = figure('Name','Name_Value','Visible','off');
 
