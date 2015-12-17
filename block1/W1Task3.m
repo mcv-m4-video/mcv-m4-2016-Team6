@@ -84,19 +84,13 @@ end
 
 
 % Plot F1 Score vs #Frame
-fig1 = figure('Name','Add a Name','Visible','on');
+fig1 = figure('Name','F1 Score vs #Frame','Visible','on');
 plot(1201:1400, A_F1_Frames, 'b', 1201:1400, B_F1_Frames, 'r');
 title('F1-Score vs #Frames'); xlabel('#Frames'); ylabel('F1-Score')
 legend('Test A','Test B');
 
 % Plot True Positives vs Foreground (pixels)
-%fig2 = figure('Name','Figure Name','Visible','on');
-%plot(1201:1400, A_TP_Frames, 'b', 1201:1400, B_TP_Frames, 'r', 1201:1400, FG_Frames, 'g');
-%title('title'); xlabel('xlabel'); ylabel('ylabel')
-%legend('TestA : TP','TestB : TP', 'Foreground');
-
-% Plot True Positives vs Foreground (pixels)
-fig3 = figure('Name','Figure Name','Visible','on');
-plot(1201:1400, A_TP_Frames./FG_Frames, 'b', 1201:1400, B_TP_Frames./FG_Frames, 'r');
-title('title'); xlabel('xlabel'); ylabel('ylabel')
-legend('TestA','TestB');
+fig2 = figure('Name','True Positives vs Foreground','Visible','on');
+plot(1201:1400, A_TP_Frames, 'b', 1201:1400, B_TP_Frames, 'r', 1201:1400, FG_Frames, 'g');
+title('title'); xlabel('#Frames'); ylabel('#Pixels')
+legend('TestA','TestB', 'Foreground');
