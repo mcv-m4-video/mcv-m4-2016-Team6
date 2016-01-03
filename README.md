@@ -29,4 +29,4 @@ Raúl Gómez
 
 <b>How to...</b>
 
-All the functions has been created following the structure specified above. Having the same organization of folders and subfolders, run the code as it is.
+All the functions have been created following the structure specified above. Having the same organization of folders and subfolders, run the code as it is.
