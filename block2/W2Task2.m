@@ -49,4 +49,21 @@ for alpha=1:15
     results{alpha} = {alpha, pixelTP, pixelTN, pixelFP, pixelFN,pixelPrecision,pixelSensitivity,pixelF1};
 end
 
-            
+%% Plot the results
+for i=1:alpha
+    TP(i) = results{1,i}{1,2};
+    TN(i) = results{1,i}{1,3};
+    FP(i) = results{1,i}{1,4};
+    FN(i) = results{1,i}{1,5};
+    P(i) = results{1,i}{1,6};
+    S(i) = results{1,i}{1,7};
+    F1(i) = results{1,i}{1,8};
+end
+
+x=1:15;
+figure;
+plot(x,TP,'b',x,TN,'g',x,FP,'r',x,FN,'y');
+
+figure;
+plot(x,F1);
+
