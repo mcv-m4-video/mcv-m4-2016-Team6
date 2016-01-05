@@ -112,7 +112,7 @@ for thIndex=1:length(alpha)
         end
         mask_images{i} = curImage;  %Save the image mask
     end
-    filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(thIndex), '.mat');
+    filename = strcat(imagesID, '/', imagesID, '-rec-alpha-', num2str(thIndex), '.mat');
     save(filename, 'mask_images'); %Save maskimages for current alpha
     filename = strcat(imagesID, '/gt_evaluation.mat');
     save(filename, 'gt_evaluation');
