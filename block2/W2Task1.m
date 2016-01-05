@@ -1,8 +1,10 @@
-clc;
-clear all;
+% Task 1: Gaussian distribution
+clc
+clear all
+close all
 
 %% SELECT THE FOLDER
-imagesID = 'highway';
+imagesID = 'traffic';
 
 %% TRAINING
 disp(strcat('Start training for...',imagesID));
@@ -95,7 +97,7 @@ for thIndex=1:length(alpha)
         curImage = images{i};
         for m=1:width %For each pixel
             for n=1:heigh
-                if abs(curImage(m,n) - means(m,n)) >= (curAlpha*(variances(m,n)+2)) %+2 to prevent low values
+                if abs(curImage(m,n) - means(m,n)) >= (curAlpha*(sigmas(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
                 else
                     curImage(m,n) = 0;    %pixel is Background
@@ -106,7 +108,8 @@ for thIndex=1:length(alpha)
     end
     filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(thIndex), '.mat');
     save(filename, 'mask_images'); %Save maskimages for current alpha
-    save('gt_evaluation', 'gt_evaluation');
+    filename = strcat(imagesID, '/gt_evaluation.mat');
+    save(filename, 'gt_evaluation');
 end
 
 %% Show results
