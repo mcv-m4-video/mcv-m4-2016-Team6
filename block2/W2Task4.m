@@ -64,7 +64,7 @@ variances = variances./numImages;
 disp('Computing sigmas...');
 sigmas = sqrt(variances);
 
-%% EVALUATION
+%% CLASSIFICATION
 disp(strcat('Start evaluation for...',imagesID));
 
 %Should be modified to save results and evaluate them
@@ -86,21 +86,29 @@ end
 for thIndex=1:length(alpha)
     %Classify pixels
     [width,height] = size(images{1});
-    rho = 0.9; %refresh rate
+    rho = 0.9; % refresh rate
+    means_update = zeros(size(images{1}));
+    variances_update = zeros(size(images{1}));
     for i=1:numImages   %For each image
         gt_name = strcat('gt', filenames{i}(3:8), '.png');
         importfile(strcat(imagesID, '/groundtruth/', gt_name));
         gt_evaluation{i,1} = cdata;
         gt_evaluation{i,2} = gt_name;
+        means = means_update;
+        variances = variances_update;
         curImage = images{i};
         for m=1:width %For each pixel
             for n=1:height
                 if abs(curImage(m,n) - means(m,n)) >= (thIndex*(variances(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
+                    means_update = means;
+                    variances_update = variances;
                 else
                     curImage(m,n) = 0;    %pixel is Background
-                    means(m,n) = rho*curImage(m,n)+(1-rho)*means(m,n); % update means
-                    variances(m,n) = rho*power(curImage(m,n)-means(m,n),2) + (1-rho)*power(variances(m,n),2); % update variances
+                    means_update(m,n) = rho*curImage(m,n)+(1-rho)*means(m,n); % update means
+                    variances_update(m,n) = rho*power(curImage(m,n)-means(m,n),2) + ...
+                                     (1-rho)*power(variances(m,n),2); % update variances
+
                 end 
             end 
         end
