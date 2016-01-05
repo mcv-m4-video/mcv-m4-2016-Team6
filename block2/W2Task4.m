@@ -1,0 +1,117 @@
+clc;
+clear all;
+
+%% SELECT THE FOLDER
+imagesID = 'highway';
+
+%% TRAINING
+disp(strcat('Start training for...',imagesID));
+
+% Model each background pixel with a Gaussian function
+directory = [imagesID +'/firsthalf/'];
+imagesData = ListFiles(directory);
+% Count the number of files
+numImages = numel(imagesData);
+
+% Load frames
+filenames = [];
+for i = 1:numImages
+    name = imagesData(i).name;
+    filenames = [filenames; cellstr(name)];
+    filepath = strcat(directory,filenames(i));
+    images{i} = double(rgb2gray(imread(filepath{1})));
+end
+
+%Compute means
+disp('Computing means...');
+means = zeros(size(images{1})); % matrix of zeros of size image
+for i=1:numImages
+    curImage = images{i};
+    gt_name = strcat('gt', filenames{i}(3:8), '.png');
+    importfile(strcat(imagesID, '/groundtruth/', gt_name));
+    % For every background pixel... 255, 170, 85, 50, 0
+    [fil, col] = size(cdata);
+    for fil=1:fil
+        for col=1:col
+            if cdata(fil, col) <= 50
+                means(fil,col) = means(fil,col) + curImage(fil,col);
+            end
+        end
+    end
+end
+means = means./numImages;
+
+%Compute variances
+disp('Computing variances...');
+variances = zeros(size(images{1}));
+for i=1:numImages
+    curImage = images{i};
+    gt_name = strcat('gt', filenames{i}(3:8), '.png');
+    importfile(strcat(imagesID, '/groundtruth/', gt_name));
+    % For every background pixel... 255, 170, 85, 50, 0
+    [fil, col] = size(cdata);
+    for fil=1:fil
+        for col=1:col
+            if cdata(fil,col) <= 50
+                variances(fil,col) = variances(fil,col) + power(curImage(fil,col) - means(fil,col),2);
+            end
+        end
+    end
+end
+variances = variances./numImages;
+
+%Compute sigmas
+disp('Computing sigmas...');
+sigmas = sqrt(variances);
+
+%% EVALUATION
+disp(strcat('Start evaluation for...',imagesID));
+
+%Should be modified to save results and evaluate them
+alpha = 1:15;
+directory = [imagesID +'/secondhalf/'];
+imagesData = ListFiles(directory);
+% Count the number of files
+numImages = numel(imagesData);
+
+% Load frames
+filenames = [];
+for i = 1:numImages
+    name = imagesData(i).name;
+    filenames = [filenames; cellstr(name)];
+    filepath = strcat(directory,filenames(i));
+    images{i} = double(rgb2gray(imread(filepath{1})));
+end
+
+for thIndex=1:length(alpha)
+    %Classify pixels
+    [width,height] = size(images{1});
+    rho = 0.6; %refresh rate
+    for i=1:numImages   %For each image
+        gt_name = strcat('gt', filenames{i}(3:8), '.png');
+        importfile(strcat(imagesID, '/groundtruth/', gt_name));
+        gt_evaluation{i,1} = cdata;
+        gt_evaluation{i,2} = gt_name;
+        curImage = images{i};
+        for m=1:width %For each pixel
+            for n=1:height
+                if abs(curImage(m,n) - means(m,n)) >= (thIndex*(variances(m,n)+2)) %+2 to prevent low values
+                    curImage(m,n) = 255;    %pixel is Foreground
+                else
+                    curImage(m,n) = 0;    %pixel is Background
+                    means(m,n) = rho*curImage(m,n)+(1-rho)*means(m,n); % update means
+                    variances(m,n) = rho*power(curImage(m,n)-means(m,n),2) + (1-rho)*power(variances(m,n),2); % update variances
+                end 
+            end 
+        end
+        mask_images{i,thIndex} = curImage;  %Save the maskimages
+    end
+    filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(thIndex), '.mat');
+    save(filename, 'images');
+    save('gt_evaluation', 'gt_evaluation');
+end
+
+%% Show results
+figure;
+subplot(1,2,1); imshow(mask_images{end-2,1}); title(filenames{end-2});
+subplot(1,2,2); imshow(gt_evaluation{end-2,1}); title(gt_evaluation{end-2,2});
