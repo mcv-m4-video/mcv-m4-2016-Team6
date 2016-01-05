@@ -16,14 +16,14 @@ for i = 1:numImages
 end
 
 %For each alpha load data and compare with annotations
+load('gt_evaluation.mat');
 for alpha=1:15
     pixelTP = 0; pixelTN = 0; pixelFP = 0; pixelFN = 0;
     filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(alpha), '.mat');
-    load(filename)
+    load(filename);
     for i=1:numImages
-        curImage = images{i};
-        gt_name = strcat('gt', filenames{i}(3:8), '.png');
-        importfile(strcat(imagesID, '/groundtruth/', gt_name));
+        curImage = mask_images{i,alpha};
+        cdata = gt_evaluation{i,1};
         % For every background pixel... 255, 170, 85, 50, 0
         [fil, col] = size(cdata);
         for fil=1:fil
@@ -36,8 +36,7 @@ for alpha=1:15
                 elseif cdata(fil, col) <= 50  %FN 
                        pixelFN = pixelFN + 1;
                 else %FP
-                      pixelFN = pixelFN + 1;
-
+                      pixelFP = pixelFP + 1;
                 end
             end
         end
@@ -46,24 +45,34 @@ for alpha=1:15
     pixelPrecision   = pixelTP / (pixelTP+pixelFP);
     pixelSensitivity = pixelTP / (pixelTP+pixelFN);
     pixelF1          = (2*pixelTP) / (2*pixelTP + pixelFP + pixelFN);
-    results{alpha} = {alpha, pixelTP, pixelTN, pixelFP, pixelFN,pixelPrecision,pixelSensitivity,pixelF1};
+    results{1,alpha} = {pixelTP, pixelTN, pixelFP, pixelFN,pixelPrecision,pixelSensitivity,pixelF1};
 end
 
 %% Plot the results
 for i=1:alpha
-    TP(i) = results{1,i}{1,2};
-    TN(i) = results{1,i}{1,3};
-    FP(i) = results{1,i}{1,4};
-    FN(i) = results{1,i}{1,5};
-    P(i) = results{1,i}{1,6};
-    S(i) = results{1,i}{1,7};
-    F1(i) = results{1,i}{1,8};
+    TP(i) = results{1,i}{1,1};
+    TN(i) = results{1,i}{1,2};
+    FP(i) = results{1,i}{1,3};
+    FN(i) = results{1,i}{1,4};
+    P(i) = results{1,i}{1,5};
+    R(i) = results{1,i}{1,6};
+    F1(i) = results{1,i}{1,7};
 end
 
 x=1:15;
 figure;
-plot(x,TP,'b',x,TN,'g',x,FP,'r',x,FN,'y');
+plot(x,TP,'-bx',x,TN,'-g^',x,FP,'-ro',x,FN,'-y*');
+legend('TP','TN','FP','FN');
 
 figure;
-plot(x,F1);
+plot(x,F1,'-bo');
+legend('F1');
+
+figure;
+plot(R,P,'-bx');
+legend('P vs R');
+
+figure;
+plot(FP,TP,'-rx');
+legend('ROC');
 
