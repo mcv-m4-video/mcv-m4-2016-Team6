@@ -33,7 +33,7 @@ for i=1:numImages
     [fil, col] = size(cdata);
     for fil=1:fil
         for col=1:col
-            if cdata(fil, col) < 50
+            if cdata(fil, col) <= 50
                 means(fil,col) = means(fil,col) + curImage(fil,col);
             end
         end
@@ -52,7 +52,7 @@ for i=1:numImages
     [fil, col] = size(cdata);
     for fil=1:fil
         for col=1:col
-            if cdata(fil,col) < 50
+            if cdata(fil,col) <= 50
                 variances(fil,col) = variances(fil,col) + power(curImage(fil,col) - means(fil,col),2);
             end
         end
@@ -68,7 +68,7 @@ sigmas = sqrt(variances);
 disp(strcat('Start evaluation for...',imagesID));
 
 %Should be modified to save results and evaluate them
-alpha = 1:15;
+alpha = 0:0.2:5;
 directory = [imagesID +'/secondhalf/'];
 imagesData = ListFiles(directory);
 % Count the number of files
@@ -85,6 +85,7 @@ end
 
 for thIndex=1:length(alpha)
     %Classify pixels
+    curAlpha = alpha(thIndex);
     [width,heigh] = size(images{1});
     for i=1:numImages   %For each image
         gt_name = strcat('gt', filenames{i}(3:8), '.png');
@@ -94,21 +95,21 @@ for thIndex=1:length(alpha)
         curImage = images{i};
         for m=1:width %For each pixel
             for n=1:heigh
-                if abs(curImage(m,n) - means(m,n)) >= (thIndex*(variances(m,n)+2)) %+2 to prevent low values
+                if abs(curImage(m,n) - means(m,n)) >= (curAlpha*(variances(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
                 else
                     curImage(m,n) = 0;    %pixel is Background
                 end 
             end 
         end
-        mask_images{i,thIndex} = curImage;  %Save the maskimages
+        mask_images{i} = curImage;  %Save the image mask
     end
     filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(thIndex), '.mat');
-    save(filename, 'images');
+    save(filename, 'mask_images'); %Save maskimages for current alpha
     save('gt_evaluation', 'gt_evaluation');
 end
 
 %% Show results
-figure;
-subplot(1,2,1); imshow(mask_images{end-2,1}); title(filenames{end-2});
-subplot(1,2,2); imshow(gt_evaluation{end-2,1}); title(gt_evaluation{end-2,2});
+% figure;
+% subplot(1,2,1); imshow(mask_images{end-2}); title(filenames{end-2});
+% subplot(1,2,2); imshow(gt_evaluation{end-2}); title(gt_evaluation{end-2,2});

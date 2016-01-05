@@ -1,4 +1,5 @@
 %TASK2: Evaluation
+close all
 
 imagesID = 'highway';
 
@@ -17,12 +18,12 @@ end
 
 %For each alpha load data and compare with annotations
 load('gt_evaluation.mat');
-for alpha=1:15
+for alpha=1:26
     pixelTP = 0; pixelTN = 0; pixelFP = 0; pixelFN = 0;
     filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(alpha), '.mat');
     load(filename);
     for i=1:numImages
-        curImage = mask_images{i,alpha};
+        curImage = mask_images{i};
         cdata = gt_evaluation{i,1};
         % For every background pixel... 255, 170, 85, 50, 0
         [fil, col] = size(cdata);
@@ -59,7 +60,7 @@ for i=1:alpha
     F1(i) = results{1,i}{1,7};
 end
 
-x=1:15;
+x=0:0.2:5;
 figure;
 plot(x,TP,'-bx',x,TN,'-g^',x,FP,'-ro',x,FN,'-y*');
 legend('TP','TN','FP','FN');
