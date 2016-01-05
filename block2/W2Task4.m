@@ -1,5 +1,7 @@
-clc;
-clear all;
+% Task 1: Gaussian distribution
+clc
+clear all
+close all
 
 %% SELECT THE FOLDER
 imagesID = 'highway';
@@ -24,7 +26,7 @@ end
 
 %Compute means
 disp('Computing means...');
-means = zeros(size(images{1})); % matrix of zeros of size image
+means = zeros(size(images{1}));
 for i=1:numImages
     curImage = images{i};
     gt_name = strcat('gt', filenames{i}(3:8), '.png');
@@ -64,11 +66,11 @@ variances = variances./numImages;
 disp('Computing sigmas...');
 sigmas = sqrt(variances);
 
-%% CLASSIFICATION
+%% EVALUATION
 disp(strcat('Start evaluation for...',imagesID));
 
 %Should be modified to save results and evaluate them
-alpha = 1:15;
+alpha = 0:0.2:5;
 directory = [imagesID +'/secondhalf/'];
 imagesData = ListFiles(directory);
 % Count the number of files
@@ -85,21 +87,18 @@ end
 
 for thIndex=1:length(alpha)
     %Classify pixels
-    [width,height] = size(images{1});
-    rho = 0.9; % refresh rate
-    means_update = zeros(size(images{1}));
-    variances_update = zeros(size(images{1}));
+    curAlpha = alpha(thIndex);
+    [width,heigh] = size(images{1});
+    rho = 0.85;
     for i=1:numImages   %For each image
         gt_name = strcat('gt', filenames{i}(3:8), '.png');
         importfile(strcat(imagesID, '/groundtruth/', gt_name));
         gt_evaluation{i,1} = cdata;
         gt_evaluation{i,2} = gt_name;
-        means = means_update;
-        variances = variances_update;
         curImage = images{i};
         for m=1:width %For each pixel
-            for n=1:height
-                if abs(curImage(m,n) - means(m,n)) >= (thIndex*(variances(m,n)+2)) %+2 to prevent low values
+            for n=1:heigh
+                if abs(curImage(m,n) - means(m,n)) >= (thIndex*(sigmas(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
                     means_update = means;
                     variances_update = variances;
@@ -107,19 +106,19 @@ for thIndex=1:length(alpha)
                     curImage(m,n) = 0;    %pixel is Background
                     means_update(m,n) = rho*curImage(m,n)+(1-rho)*means(m,n); % update means
                     variances_update(m,n) = rho*power(curImage(m,n)-means(m,n),2) + ...
-                                     (1-rho)*power(variances(m,n),2); % update variances
-
-                end 
+                                            (1-rho)*power(variances(m,n),2); % update variances
+                end
             end 
         end
-        mask_images{i,thIndex} = curImage;  %Save the maskimages
+        mask_images{i} = curImage;  %Save the image mask
     end
     filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(thIndex), '.mat');
-    save(filename, 'images');
-    save('gt_evaluation', 'gt_evaluation');
+    save(filename, 'mask_images'); %Save maskimages for current alpha
+    filename = strcat(imagesID, '/gt_evaluation.mat');
+    save(filename, 'gt_evaluation');
 end
 
 %% Show results
-figure;
-subplot(1,2,1); imshow(mask_images{end-2,1}); title(filenames{end-2});
-subplot(1,2,2); imshow(gt_evaluation{end-2,1}); title(gt_evaluation{end-2,2});
+ figure;
+ subplot(1,2,1); imshow(mask_images{end-2}); title(filenames{end-2});
+ subplot(1,2,2); imshow(gt_evaluation{end-2}); title(gt_evaluation{end-2,2});
