@@ -86,7 +86,7 @@ end
 for thIndex=1:length(alpha)
     %Classify pixels
     [width,height] = size(images{1});
-    rho = 0.6; %refresh rate
+    rho = 0.9; %refresh rate
     for i=1:numImages   %For each image
         gt_name = strcat('gt', filenames{i}(3:8), '.png');
         importfile(strcat(imagesID, '/groundtruth/', gt_name));
