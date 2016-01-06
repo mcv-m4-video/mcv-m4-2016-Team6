@@ -72,24 +72,34 @@ for type=1:length(imagesID)
     plot(x,TP(type,:),'-bx',x,TN(type,:),'-g^',x,FP(type,:),'-ro',x,FN(type,:),'-y*');
     legend('TP','TN','FP','FN');
     title(imagesID(type));
+    xlabel('Alpha');
+    ylabel('Pixels');
+
 end
 
-% figure;
-% plot(x,F1(1,:),'r');
-% title('F1 score');
 
+%F1 score
 figure;
 plot(x,F1(1,:),'r',x,F1(2,:),'g',x,F1(3,:),'b');
 legend([imagesID(1), imagesID(2), imagesID(3)]);
-title('F1 score');
+xlabel('Alpha');
+ylabel('F1 score');
 
+%Precision vs recall
 figure;
 plot(R(1,:),P(1,:),'r',R(2,:),P(2,:),'g',R(3,:),P(3,:),'b');
 legend([imagesID(1), imagesID(2), imagesID(3)]);
-title('Precision vs Recall');
+xlabel('Recall');
+ylabel('Precision');
 
-figure;
-plot(FP(1,:),TP(1,:),'r',FP(2,:),TP(2,:),'g',FP(3,:),TP(3,:),'b');
-legend([imagesID(1), imagesID(2), imagesID(3)]);
-title('ROC');
+%Area under Precision vs recall curve
+trapz(P(1,:),R(1,:))
+trapz(P(2,:),R(2,:))
+trapz(P(3,:),R(3,:))
+
+% ROC 
+% figure;
+% plot(FP(1,:),TP(1,:),'r',FP(2,:),TP(2,:),'g',FP(3,:),TP(3,:),'b');
+% legend([imagesID(1), imagesID(2), imagesID(3)]);
+% title('ROC');
 
