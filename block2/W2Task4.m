@@ -1,4 +1,7 @@
-% Task 1: Gaussian distribution
+% Task 4: Adaptive Gaussian distribution
+% Computes means and variances of training set, uses best alpha computed in Task 1 
+% to calculate best rho, and saves the segmentation belonging to this
+
 clc
 clear all
 close all
@@ -7,118 +10,38 @@ close all
 imagesID = 'highway';
 
 %% TRAINING
-disp(strcat('Start training for...',imagesID));
+disp(['Start training for... ' imagesID]);
+imdir = '/firsthalf/';
 
-% Model each background pixel with a Gaussian function
-directory = [imagesID +'/firsthalf/'];
-imagesData = ListFiles(directory);
-% Count the number of files
-numImages = numel(imagesData);
-
-% Load frames
-filenames = [];
-for i = 1:numImages
-    name = imagesData(i).name;
-    filenames = [filenames; cellstr(name)];
-    filepath = strcat(directory,filenames(i));
-    images{i} = double(rgb2gray(imread(filepath{1})));
-end
+%Load frames
+[images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
 %Compute means
 disp('Computing means...');
-means = zeros(size(images{1}));
-for i=1:numImages
-    curImage = images{i};
-    gt_name = strcat('gt', filenames{i}(3:8), '.png');
-    importfile(strcat(imagesID, '/groundtruth/', gt_name));
-    % For every background pixel... 255, 170, 85, 50, 0
-    [fil, col] = size(cdata);
-    for fil=1:fil
-        for col=1:col
-            if cdata(fil, col) <= 50
-                means(fil,col) = means(fil,col) + curImage(fil,col);
-            end
-        end
-    end
-end
-means = means./numImages;
+means = ComputeMeans(imagesID, images, filenames, numImages);
 
 %Compute variances
 disp('Computing variances...');
-variances = zeros(size(images{1}));
-for i=1:numImages
-    curImage = images{i};
-    gt_name = strcat('gt', filenames{i}(3:8), '.png');
-    importfile(strcat(imagesID, '/groundtruth/', gt_name));
-    % For every background pixel... 255, 170, 85, 50, 0
-    [fil, col] = size(cdata);
-    for fil=1:fil
-        for col=1:col
-            if cdata(fil,col) <= 50
-                variances(fil,col) = variances(fil,col) + power(curImage(fil,col) - means(fil,col),2);
-            end
-        end
-    end
-end
-variances = variances./numImages;
+variances = ComputeVariances(imagesID, images, filenames, numImages, means);
 
 %Compute sigmas
 disp('Computing sigmas...');
 sigmas = sqrt(variances);
 
 %% EVALUATION
-disp(strcat('Start evaluation for...',imagesID));
+disp(['Start evaluation for... ' imagesID]);
+imdir = '/secondhalf/';
 
-%Should be modified to save results and evaluate them
-alpha = 0:0.2:5;
-directory = [imagesID +'/secondhalf/'];
-imagesData = ListFiles(directory);
-% Count the number of files
-numImages = numel(imagesData);
+bestalpha = 2;
+rho = 0:0.02:1;
 
-% Load frames
-filenames = [];
-for i = 1:numImages
-    name = imagesData(i).name;
-    filenames = [filenames; cellstr(name)];
-    filepath = strcat(directory,filenames(i));
-    images{i} = double(rgb2gray(imread(filepath{1})));
-end
+[images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-for thIndex=1:length(alpha)
-    %Classify pixels
-    curAlpha = alpha(thIndex);
-    [width,heigh] = size(images{1});
-    rho = 0.85;
-    for i=1:numImages   %For each image
-        gt_name = strcat('gt', filenames{i}(3:8), '.png');
-        importfile(strcat(imagesID, '/groundtruth/', gt_name));
-        gt_evaluation{i,1} = cdata;
-        gt_evaluation{i,2} = gt_name;
-        curImage = images{i};
-        for m=1:width %For each pixel
-            for n=1:heigh
-                if abs(curImage(m,n) - means(m,n)) >= (thIndex*(sigmas(m,n)+2)) %+2 to prevent low values
-                    curImage(m,n) = 255;    %pixel is Foreground
-                    means_update = means;
-                    variances_update = variances;
-                else
-                    curImage(m,n) = 0;    %pixel is Background
-                    means_update(m,n) = rho*curImage(m,n)+(1-rho)*means(m,n); % update means
-                    variances_update(m,n) = rho*power(curImage(m,n)-means(m,n),2) + ...
-                                            (1-rho)*power(variances(m,n),2); % update variances
-                end
-            end 
-        end
-        mask_images{i} = curImage;  %Save the image mask
-    end
-    filename = strcat(imagesID, '/', imagesID, '-rec-alpha-', num2str(thIndex), '.mat');
-    save(filename, 'mask_images'); %Save maskimages for current alpha
-    filename = strcat(imagesID, '/gt_evaluation.mat');
-    save(filename, 'gt_evaluation');
-end
+LoadAllRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
 
-%% Show results
- figure;
- subplot(1,2,1); imshow(mask_images{end-2}); title(filenames{end-2});
- subplot(1,2,2); imshow(gt_evaluation{end-2}); title(gt_evaluation{end-2,2});
+bestrho = GetBestRho( bestalpha, rho, images, filenames, imagesID, numImages);
+disp(['Best rho for ' imagesID ' is ' bestrho]);
+
+%% SAVE RESULTS
+disp(['Saving results for rho = ' bestrho])
+SaveResults( bestrho, imagesID, numImages, 'rec', 'rho');
