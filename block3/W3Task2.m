@@ -35,14 +35,14 @@ connectivity = 4; %4, 8
         im_gt(im_gt<51) = 0;
         im_gt(im_gt>50) = 255;
 
-        % Compute St & Gr 
+        % Compute St & Gr (Task0)
         fgMask = step(detector, im);
 
         %Filling holes (Task 1)
         fgMask = imfill(fgMask, connectivity, 'holes');
         
         %Remove small objects (Task 2)
-        fgMask = bwareopen(fgMask, minPixels, connectivity);
+        fgMask = bwareaopen(fgMask, minPixels, connectivity);
         
         % Test Images
         if i > seqIni + numTrainingFrames
