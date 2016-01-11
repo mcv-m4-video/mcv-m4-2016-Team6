@@ -1,5 +1,5 @@
 % Initialization of workspace
-clear all; close all; dbstop error;
+clear all; close all; %dbstop error;
 
 
 %% Used to find the best LearningRate and MinimumBackgroundRate values for each dataset (it takes about 15 minutes)
@@ -40,10 +40,6 @@ for j=1:numel(minPixels)
 end
 
 
-% AUC
-%Compute area under the Precicion-Recall Curve
-hw_AUC = trapz(hw_pre,hw_rec);
-
 %% FALL Dataset
 %
 disp('FALL Dataset')
@@ -74,10 +70,6 @@ for j=1:numel(minPixels)
     [fall_pre(j), fall_rec(j), fall_f1(j)] = W3Task2(minPixels(j), DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians, minBkgRatio, learningRate);
 end
 
-
-% AUC
-%Compute area under the Precicion-Recall Curve
-fall_AUC = trapz(fall_pre,fall_rec)
 
 %% TRAFFIC Dataset
 %
@@ -112,23 +104,24 @@ end
 
 
 
-% AUC
-%Compute area under the Precicion-Recall Curve
-tff_AUC = trapz(tff_pre,tff_rec);
-
 %% Plot results
-
 %Precision vs recall
 figure;
 plot(hw_rec,hw_pre,'r',fall_rec,fall_pre,'g',tff_rec,tff_pre,'b');
-legend(['highway', 'fall', 'traffic']);
 xlabel('Recall');
 ylabel('Precision');
+legend('highway', 'fall', 'traffic');
 
-%Plot AUC
+%Plot AUC 
+%Compute area under the Precicion-Recall Curve
+hw_AUC = abs(trapz(hw_rec,hw_pre));
+fall_AUC = abs(trapz(fall_rec,fall_pre));
+tff_AUC = abs(trapz(tff_rec,tff_pre));
+%Plot
+figure;
 AUCS = [hw_AUC, fall_AUC, tff_AUC];
 bar(AUCS);
-legend = (['highway', 'fall', 'traffic']);
+legend('highway', 'fall', 'traffic')
 ylabel('AUC');
 
 
