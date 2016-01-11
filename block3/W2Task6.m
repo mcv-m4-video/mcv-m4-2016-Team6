@@ -3,8 +3,10 @@ clear all; close all; dbstop error;
 
 
 %% Used to find the best LearningRate and MinimumBackgroundRate values for each dataset (it takes about 15 minutes)
-minBkgRatio = [0.5:0.1:0.9];
-learningRate = [0.002:0.003:0.015];
+% minBkgRatio = [0.5:0.1:0.9];
+% learningRate = [0.002:0.003:0.015];
+
+%Compute AUC with this
 numGaussians = [3, 4, 5, 6];
 
 %% HIGHWAY Dataset
@@ -23,19 +25,20 @@ learningRate = [0.011];
 seqIni = 1050;
 seqFini = 1350;
 
-for i=1:numel(minBkgRatio)
-for k=1:numel(learningRate)
+
+
 for j=1:numel(numGaussians)
-%     msg = sprintf('Minimum Background Ratio = %.3f\nLearning Rate = %.3f', minBkgRatio(i), learningRate(k));
-%     disp(msg);
-
-    [pre(j), rec(j), hw_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
-    % Plot precision, recall, f1-score
-
-%     msg = sprintf('#Gaussians = %d ( F1=%.3f )\n', numGaussians(j), hw_f1(i,k, j));
-%     disp(msg);
+    %Only S&G (TASK 0) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
+    %S&G + fill holes (TASK 1) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(1,1,j)] = W3Task1(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio, learningRate);
 end
-end
+
+ %S&G + fill holes + area filtering (TASK 2) AUC with different num of min
+ %pixels per object
+ minPixels = 2:2:20;
+for j=1:numel(minPixels)
+    [pre(j), rec(j), tff_f1(1,1,j)] = W3Task2(minPixels(j), DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
 end
 
 % Find the maximum f-1 score configuration
@@ -62,21 +65,20 @@ learningRate = [0.014];
 seqIni = 1460;
 seqFini = 1560;
 
-for i=1:numel(minBkgRatio)
-for k=1:numel(learningRate)
+
+
 for j=1:numel(numGaussians)
-%     msg = sprintf('Minimum Background Ratio = %.3f\nLearning Rate = %.3f', minBkgRatio(i), learningRate(k));
-%     disp(msg);
-
-    [pre(j), rec(j), fall_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
-    %[hw_pre, hw_rec, hw_f1] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians, minBkgRatio(i), learningRate(k));
-    % Plot precision, recall, f1-score
-
-%         msg = sprintf('#Gaussians = %d ( P=%.3f R=%.3f F1=%.3f )\n', numGaussians(j), hw_pre(j), hw_rec(j), hw_f1(j));
-%     msg = sprintf('#Gaussians = %d ( F1=%.3f )\n', numGaussians(j), fall_f1(i,k, j));
-%     disp(msg);
+    %Only S&G (TASK 0) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
+    %S&G + fill holes (TASK 1) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(1,1,j)] = W3Task1(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio, learningRate);
 end
-end
+
+ %S&G + fill holes + area filtering (TASK 2) AUC with different num of min
+ %pixels per object
+ minPixels = 2:2:20;
+for j=1:numel(minPixels)
+    [pre(j), rec(j), tff_f1(1,1,j)] = W3Task2(minPixels(j), DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
 end
 
 % Find the maximum f-1 score configuration
@@ -103,17 +105,19 @@ learningRate = [0.014];
 seqIni = 950;
 seqFini = 1050;
 
-for i=1:numel(minBkgRatio)
-for k=1:numel(learningRate)
-for j=1:numel(numGaussians)
-%     msg = sprintf('Minimum Background Ratio = %.3f\nLearning Rate = %.3f', minBkgRatio(i), learningRate(k));
-%     disp(msg);
 
-    [pre(j), rec(j), tff_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
-%     msg = sprintf('#Gaussians = %d ( F1=%.3f )\n', numGaussians(j), tff_f1(i,k, j));
-%     disp(msg);
+for j=1:numel(numGaussians)
+    %Only S&G (TASK 0) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(i,k,j)] = StaufferGrimson(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
+    %S&G + fill holes (TASK 1) AUC with different num of Gaussians
+%     [pre(j), rec(j), tff_f1(1,1,j)] = W3Task1(DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio, learningRate);
 end
-end
+
+ %S&G + fill holes + area filtering (TASK 2) AUC with different num of min
+ %pixels per object
+ minPixels = 2:2:20;
+for j=1:numel(minPixels)
+    [pre(j), rec(j), tff_f1(1,1,j)] = W3Task2(minPixels(j), DirDS, DirGT, DirOUT, seqIni, seqFini, numGaussians(j), minBkgRatio(i), learningRate(k));
 end
 
 %Compute area under the Precicion-Recall Curve
