@@ -29,9 +29,9 @@ for thIndex=1:length(alpha)  % index goes from 1 to length of alpha (11) bc we w
                 else
                     curImage(m,n) = 0;    %pixel is Background
                     
-                    curMeans(m,n) = bestrho * curImage(m,n)+(1-bestrho)* curMeans(m,n); % update means
-                    curVariances(m,n) = bestrho*power(curImage(m,n) - curMeans(m,n),2) + ...
-                                            (1-bestrho)*power(curVariances(m,n),2); % update variances
+                    curMeans(m,n) = bestrho * images{i}(m,n)+(1-bestrho)* curMeans(m,n); % update means
+                    curVariances(m,n) = bestrho*power(images{i}(m,n) - curMeans(m,n),2) + ...
+                                            (1-bestrho) * curVariances(m,n); % update variances
                     curSigmas(m,n) = sqrt(curVariances(m,n));
                 end
             end 

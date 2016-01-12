@@ -5,7 +5,7 @@ close all
 
 % step2evaluate = '/'; %Only clasification
 % step2evaluate = '/fillHoles/'; %Task 1
-step2evaluate = '/deleteSmallCC/'; %Task 2
+step2evaluate = '/deleteSmallCC/11/'; %Task 2
 
 
 imagesID = {'highway', 'fall', 'traffic'};
@@ -100,15 +100,16 @@ ylabel('Precision');
 hw_AUC = trapz(P(1,:),R(1,:));
 fall_AUC = trapz(P(2,:),R(2,:));
 tff_AUC = trapz(P(3,:),R(3,:));
+mean_AUC = (hw_AUC + fall_AUC + tff_AUC) / 3;
 
 disp(['AUC Highway: ' num2str(hw_AUC)]);
 disp(['AUC Fall: ' num2str(fall_AUC)]);
 disp(['AUC Traffic: ' num2str(tff_AUC)]);
 
 figure;
-AUCS = [hw_AUC, fall_AUC, tff_AUC];
-str = {'Highway'; 'Fall'; 'Traffic'};
-x=[1:1:3]';
+AUCS = [hw_AUC, fall_AUC, tff_AUC, mean_AUC];
+str = {'Highway'; 'Fall'; 'Traffic'; 'Mean'};
+x=[1:1:4]';
 bar(x,AUCS);
 ylabel('AUC');
 set(gca, 'XTickLabel',str, 'XTick',1:numel(str))
