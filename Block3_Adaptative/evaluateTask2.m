@@ -4,10 +4,10 @@ close all
 
 
 imagesID = {'highway', 'fall', 'traffic'};
-minPixels = 0:4:60;
+minPixels = 1:2:11;
 
 for curMinPixels=1:length(minPixels)
-    step2evaluate = ['/deleteSmallCC/' num2str(curMinPixels) '/']; %Task 2
+    step2evaluate = ['/reconstruction/' num2str(curMinPixels) '/']; %Task 2
     for type=1:length(imagesID)
         directory = [imagesID{type} +'/secondhalf/'];
         imagesData = ListFiles(directory);
@@ -80,5 +80,5 @@ end
 figure;
 plot(minPixels,hw_AUC,'r',minPixels,fall_AUC,'g',minPixels,tff_AUC,'b');
 legend([imagesID(1), imagesID(2), imagesID(3)]);
-xlabel('CC min size');
+xlabel('SE size');
 ylabel('AUC');
