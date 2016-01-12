@@ -3,9 +3,9 @@ clc
 clear all
 close all
 
-step2evaluate = '/'; %Only clasification
+% step2evaluate = '/'; %Only clasification
 % step2evaluate = '/fillHoles/'; %Task 1
-% step2evaluate = '/deleteSmallCC/'; %Task 2
+step2evaluate = '/deleteSmallCC/'; %Task 2
 
 
 imagesID = {'highway', 'fall', 'traffic'};
@@ -39,9 +39,9 @@ for type=1:length(imagesID)
             for fil=1:fil
                 for col=1:col
                     if cdata(fil, col) > 50 && cdata(fil, col) < 255 %Not evaluated 
-                    elseif cdata(fil, col) <= 50 && curImage(fil, col) <= 50 %TN (BG)
+                    elseif cdata(fil, col) <= 50 && curImage(fil, col) == 0 %TN (BG)
                            pixelTN = pixelTN + 1;
-                    elseif cdata(fil, col) == 255 && curImage(fil, col) == 255 %TP (FG)
+                    elseif cdata(fil, col) == 255 && curImage(fil, col) > 0 %TP (FG)
                            pixelTP = pixelTP + 1;
                     elseif cdata(fil, col) <= 50  %FP 
                            pixelFP = pixelFP + 1;
@@ -107,11 +107,17 @@ disp(['AUC Traffic: ' num2str(tff_AUC)]);
 
 figure;
 AUCS = [hw_AUC, fall_AUC, tff_AUC];
-bar(AUCS);
-legend('highway', 'fall', 'traffic')
+str = {'Highway'; 'Fall'; 'Traffic'};
+x=[1:1:3]';
+bar(x,AUCS);
 ylabel('AUC');
-
-
+set(gca, 'XTickLabel',str, 'XTick',1:numel(str))
+for i1=1:numel(AUCS)
+    text(x(i1),AUCS(i1),num2str(AUCS(i1),'%0.2f'),...
+               'HorizontalAlignment','center',...
+               'VerticalAlignment','bottom')
+end
+ylim([0 1])
 
 % ROC 
 % figure;

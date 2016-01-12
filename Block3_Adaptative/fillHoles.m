@@ -1,28 +1,30 @@
 function [ ] = fillHoles(  )
 connectivity = 4;
 %Loads the maks, fills the holes and saves the masks in /sequence/fillHoles
-imagesID = {'highway'};
+imagesIDs = {'highway', 'fall', 'traffic'};
 
-for type=1:length(imagesID)
-    dir = strcat(imagesID , '/fillHoles');
-    mkdir(dir{1});
+for type=1:length(imagesIDs)
     
-    directory = [imagesID{type} +'/secondhalf/'];
+    imagesID = imagesIDs{type};
+    dir = strcat(imagesID , '/fillHoles');
+    mkdir(dir);
+    
+    directory = [imagesID +'/secondhalf/'];
     imagesData = ListFiles(directory);
     % Count the number of files
     numImages = numel(imagesData);
     
     %Load masks
     for alpha=1:11
-        filename = strcat(imagesID{type}, '/', imagesID{type}, '-alpha-', num2str(alpha), '.mat');
+        filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(alpha), '.mat');
         load(filename);
         for i=1:numImages
             curImage = mask_images{i};
             curImage =  imfill(curImage, connectivity, 'holes');
             mask_images{i} = curImage;  %Save the image mask
         end
-        newFilename = strcat(imagesID, '/fillHoles/', imagesID, '-alha-', num2str(rho), '.mat');
-        save(newFilename{1}, 'mask_images'); %Save maskimages for current rho
+        newFilename = strcat(imagesID, '/fillHoles/', imagesID, '-alpha-', num2str(alpha), '.mat');
+        save(newFilename, 'mask_images'); %Save maskimages for current rho
     end
 
 end
