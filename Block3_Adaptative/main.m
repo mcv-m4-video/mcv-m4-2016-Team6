@@ -9,17 +9,17 @@ close all
 
 %% CONFIG
 imagesIDs = {'highway', 'fall', 'traffic'};
-bestalphas = [2 3.2 3.8];
+bestrhos = [0.2, 0.1, 0.2];
 
-    %Already computed aplhas (maybe bad approximation)
-    % bestalpha = 3; %Highway
-    % bestalpha = 3.2; %Fall
-    % bestalpha = 3.8; %Highway
+    %Already computed rhos (maybe bad approximation)
+    % bestrho = 3; %Highway
+    % bestrho = 3.2; %Fall
+    % bestrho = 3.8; %Highway
     
 for type=1:length(imagesIDs)
     
     imagesID = imagesIDs{type};
-    bestalpha = bestalphas(type);
+    bestrho = bestrhos(type);
     disp(imagesID);
 
     %% TRAINING
@@ -46,8 +46,8 @@ for type=1:length(imagesIDs)
     imdir = '/secondhalf/';
     [images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-    rho = 0:0.1:1;
+    alpha = 0:1:10;
     %Saves .mat files with results for differents rhos to be evaluated with evaluate.m
-    classifyWithDifferentRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
+    classifyWithDifferentAlphas( alpha, bestrho, images, filenames, imagesID, numImages, means, variances, sigmas )
     
 end

@@ -16,16 +16,16 @@ for type=1:length(imagesID)
     numImages = numel(imagesData);
     
     %Load masks
-    for rho=1:11
-        filename = strcat(imagesID{type}, '/fillHoles/', imagesID{type}, '-rho-', num2str(rho), '.mat');
+    for alpha=1:11
+        filename = strcat(imagesID{type}, '/fillHoles/', imagesID{type}, '-alpha-', num2str(alpha), '.mat');
         load(filename);
         for i=1:numImages
             curImage = mask_images{i};
             curImage = bwareaopen(curImage, minPixels, connectivity);           
             mask_images{i} = curImage;  %Save the image mask
         end
-        newFilename = strcat(imagesID, '/deleteSmallCC/', imagesID, '-rho-', num2str(rho), '.mat');
-        save(newFilename{1}, 'mask_images'); %Save maskimages for current rho
+        newFilename = strcat(imagesID, '/deleteSmallCC/', imagesID, '-alpha-', num2str(alpha), '.mat');
+        save(newFilename{1}, 'mask_images'); %Save maskimages for current alpha
     end
 
 end

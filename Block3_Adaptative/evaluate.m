@@ -24,12 +24,12 @@ for type=1:length(imagesID)
         filenames = [filenames; cellstr(name)];
     end
 
-    %For each rho load data and compare with annotations
+    %For each alpha load data and compare with annotations
     gtpath = [imagesID{type} +'/gt_evaluation.mat'];
     load(gtpath);
-    for rho=1:11
+    for alpha=1:11
         pixelTP = 0; pixelTN = 0; pixelFP = 0; pixelFN = 0;
-        filename = strcat(imagesID{type}, step2evaluate, imagesID{type}, '-rho-', num2str(rho), '.mat');
+        filename = strcat(imagesID{type}, step2evaluate, imagesID{type}, '-alpha-', num2str(alpha), '.mat');
         load(filename);
         for i=1:numImages
             curImage = mask_images{i};
@@ -55,13 +55,13 @@ for type=1:length(imagesID)
         pixelPrecision   = pixelTP / (pixelTP+pixelFP);
         pixelSensitivity = pixelTP / (pixelTP+pixelFN);
         pixelF1          = (2*pixelTP) / (2*pixelTP + pixelFP + pixelFN);
-        results{type,rho} = {pixelTP, pixelTN, pixelFP, pixelFN,pixelPrecision,pixelSensitivity,pixelF1};
+        results{type,alpha} = {pixelTP, pixelTN, pixelFP, pixelFN,pixelPrecision,pixelSensitivity,pixelF1};
     end
 end
 
 %% Plot the results for all types
 for type=1:length(imagesID)
-    for i=1:rho
+    for i=1:alpha
         TP(type,i) = results{type,i}{1,1};
         TN(type,i) = results{type,i}{1,2};
         FP(type,i) = results{type,i}{1,3};
@@ -71,12 +71,12 @@ for type=1:length(imagesID)
         F1(type,i) = results{type,i}{1,7};
     end
     
-%     x=0:0.1:1;
+%     x=0:1:10;
 %     figure;
 %     plot(x,TP(type,:),'-bx',x,TN(type,:),'-g^',x,FP(type,:),'-ro',x,FN(type,:),'-y*');
 %     legend('TP','TN','FP','FN');
 %     title(imagesID(type));
-%     xlabel('Rho');
+%     xlabel('Alpha');
 %     ylabel('Pixels');
 
 end
@@ -86,7 +86,7 @@ end
 % figure;
 % plot(x,F1(1,:),'r',x,F1(2,:),'g',x,F1(3,:),'b');
 % legend([imagesID(1), imagesID(2), imagesID(3)]);
-% xlabel('Rho');
+% xlabel('Alpha');
 % ylabel('F1 score');
 
 %Precision vs recall
