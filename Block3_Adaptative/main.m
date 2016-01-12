@@ -46,7 +46,7 @@ for type=1:length(imagesIDs)
     imdir = '/secondhalf/';
     [images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-    alpha = 0:1:10;
+    alpha = 0.1:1:10;
     %Saves .mat files with results for differents rhos to be evaluated with evaluate.m
     classifyWithDifferentAlphas( alpha, bestrho, images, filenames, imagesID, numImages, means, variances, sigmas )
     

@@ -25,7 +25,7 @@ for curMinPixels=1:length(minPixels)
         %For each alpha load data and compare with annotations
         gtpath = [imagesID{type} +'/gt_evaluation.mat'];
         load(gtpath);
-        for alpha=1:11
+        for alpha=1:10
             pixelTP = 0; pixelTN = 0; pixelFP = 0; pixelFN = 0;
             filename = strcat(imagesID{type}, step2evaluate, imagesID{type}, '-alpha-', num2str(alpha), '.mat');
             load(filename);

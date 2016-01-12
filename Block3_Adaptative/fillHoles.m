@@ -15,7 +15,7 @@ for type=1:length(imagesIDs)
     numImages = numel(imagesData);
     
     %Load masks
-    for alpha=1:11
+    for alpha=1:10
         filename = strcat(imagesID, '/', imagesID, '-alpha-', num2str(alpha), '.mat');
         load(filename);
         for i=1:numImages

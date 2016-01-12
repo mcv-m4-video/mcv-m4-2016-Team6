@@ -18,7 +18,7 @@ for curMinPixels=1:length(minPixels)
         numImages = numel(imagesData);
 
         %Load masks
-        for alpha=1:11
+        for alpha=1:10
             filename = strcat(imagesID{type}, '/fillHoles/', imagesID{type}, '-alpha-', num2str(alpha), '.mat');
             load(filename);
             for i=1:numImages

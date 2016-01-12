@@ -5,6 +5,8 @@ for thIndex=1:length(alpha)  % index goes from 1 to length of alpha (11) bc we w
     
     curMeans = means;
     curVariances = variances;
+    curSigmas = sigmas;
+
     
     %Classify pixels
     disp(['Alpha:  ' num2str(thIndex)]);
@@ -22,14 +24,15 @@ for thIndex=1:length(alpha)  % index goes from 1 to length of alpha (11) bc we w
         curImage = images{i};
         for m=1:width %For each pixel
             for n=1:height
-                if abs(curImage(m,n) - means(m,n)) >= (curAlpha*(sigmas(m,n)+2)) %+2 to prevent low values
+                if abs(curImage(m,n) - curMeans(m,n)) >= (curAlpha*(curSigmas(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
                 else
                     curImage(m,n) = 0;    %pixel is Background
                     
-                    curMeans(m,n) = bestrho*curImage(m,n)+(1-bestrho)*means(m,n); % update means
-                    curVariances(m,n) = bestrho*power(curImage(m,n)-means(m,n),2) + ...
-                                            (1-bestrho)*power(variances(m,n),2); % update variances
+                    curMeans(m,n) = bestrho * curImage(m,n)+(1-bestrho)* curMeans(m,n); % update means
+                    curVariances(m,n) = bestrho*power(curImage(m,n) - curMeans(m,n),2) + ...
+                                            (1-bestrho)*power(curVariances(m,n),2); % update variances
+                    curSigmas(m,n) = sqrt(curVariances(m,n));
                 end
             end 
             mask_images{i} = curImage;  %Save the image mask
