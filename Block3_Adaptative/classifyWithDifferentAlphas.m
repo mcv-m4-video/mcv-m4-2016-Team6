@@ -27,15 +27,12 @@ for thIndex=1:length(alpha)  % index goes from 1 to length of alpha (11) bc we w
             for n=1:height
                 if abs(curImage(m,n) - means(m,n)) >= (curAlpha*(sigmas(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
-                    
-                    means_update = means;
-                    variances_update = variances;
                 else
                     curImage(m,n) = 0;    %pixel is Background
                     
-                    means_update(m,n) = bestRho*curImage(m,n)+(1-bestRho)*means(m,n); % update means
-                    variances_update(m,n) = bestRho*power(curImage(m,n)-means(m,n),2) + ...
-                                            (1-bestRho)*power(variances(m,n),2); % update variances
+                    means_update(m,n) = bestrho*curImage(m,n)+(1-bestrho)*means(m,n); % update means
+                    variances_update(m,n) = bestrho*power(curImage(m,n)-means(m,n),2) + ...
+                                            (1-bestrho)*power(variances(m,n),2); % update variances
                 end
             end 
             mask_images{i} = curImage;  %Save the image mask
