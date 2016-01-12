@@ -7,38 +7,47 @@ clc
 clear all
 close all
 
-%% SELECT THE FOLDER
-imagesID = 'Fall';
+%% CONFIG
+imagesIDs = {'highway', 'fall', 'traffic'};
+bestalphas = [2 3.2 3.8];
 
-%Already computed aplha
-bestalpha = 3; %Highway
-% bestalpha = 3.2; %Fall
-% bestalpha = 3.8; %Highway
+    %Already computed aplhas (maybe bad approximation)
+    % bestalpha = 3; %Highway
+    % bestalpha = 3.2; %Fall
+    % bestalpha = 3.8; %Highway
+    
+for type=1:length(imagesIDs)
+    
+    imagesID = imagesIDs{type};
+    bestalpha = bestalphas(type);
+    disp(imagesID);
 
-%% TRAINING
-disp(['Start training for... ' imagesID]);
-imdir = '/firsthalf/';
+    %% TRAINING
+    disp(['Start training for... ' imagesID]);
+    imdir = '/firsthalf/';
 
-%Load frames
-[images, filenames, numImages] = LoadFrames(imagesID, imdir);
+    %Load frames
+    [images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-%Compute means
-disp('Computing means...');
-means = ComputeMeans(imagesID, images, filenames, numImages);
+    %Compute means
+    disp('Computing means...');
+    means = ComputeMeans(imagesID, images, filenames, numImages);
 
-%Compute variances
-disp('Computing variances...');
-variances = ComputeVariances(imagesID, images, filenames, numImages, means);
+    %Compute variances
+    disp('Computing variances...');
+    variances = ComputeVariances(imagesID, images, filenames, numImages, means);
 
-%Compute sigmas
-disp('Computing sigmas...');
-sigmas = sqrt(variances);
+    %Compute sigmas
+    disp('Computing sigmas...');
+    sigmas = sqrt(variances);
 
-%% CLASSIFICATION
-disp(['Start evaluation for... ' imagesID]);
-imdir = '/secondhalf/';
-[images, filenames, numImages] = LoadFrames(imagesID, imdir);
+    %% CLASSIFICATION
+    disp(['Start evaluation for... ' imagesID]);
+    imdir = '/secondhalf/';
+    [images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-rho = 0:0.1:1;
-%Saves .mat files with results for differents rhos to be evaluated with evaluate.m
-classifyWithDifferentRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
+    rho = 0:0.1:1;
+    %Saves .mat files with results for differents rhos to be evaluated with evaluate.m
+    classifyWithDifferentRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
+    
+end
