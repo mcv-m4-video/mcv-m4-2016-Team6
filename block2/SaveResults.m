@@ -4,7 +4,7 @@ function SaveResults( bestparam, imagesID, numImages, rec, param)
 % param = string 'alpha' or 'rho' indicating parameter currently being
 % varied
 
-paramindex = bestparam/0.2;
+paramindex = bestparam/0.05;
 
 filename = strcat(imagesID, '/', imagesID, '-', param, '-', num2str(paramindex+1), '.mat');
 load(filename);

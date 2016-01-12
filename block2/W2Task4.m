@@ -33,11 +33,11 @@ disp(['Start evaluation for... ' imagesID]);
 imdir = '/secondhalf/';
 
 bestalpha = 2;
-rho = 0:0.02:1;
+rho = 0:0.05:0.5;
 
 [images, filenames, numImages] = LoadFrames(imagesID, imdir);
 
-LoadAllRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
+LoadAllRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas );
 
 bestrho = GetBestRho( bestalpha, rho, images, filenames, imagesID, numImages);
 disp(['Best rho for ' imagesID ' is ' bestrho]);
