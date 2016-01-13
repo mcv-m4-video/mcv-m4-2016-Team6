@@ -1,4 +1,4 @@
-function [  ] = task4_tophat(  )
+function [  ] = task4_tophat( )
 %Task4: TOPHAT
 
 minPixelsTH = 5:2:15;
@@ -8,13 +8,14 @@ minPixelsOP = 1:2:11;
 
 imagesID = {'highway', 'fall', 'traffic'};
 
-for curMinPixels=1:length(minPixels)
-
+for curMinPixels=1:length(minPixelsTH)
+    curMinPixels
     SE = ones(minPixelsTH(curMinPixels), minPixelsTH(curMinPixels));
     SE2 = ones(minPixelsOP(curMinPixels), minPixelsOP(curMinPixels));
     
     for type=1:length(imagesID)
-        dir = strcat(imagesID(type) , '/reconstruction/', num2str(curMinPixels));
+        type
+        dir = strcat(imagesID(type) , '/tophat/', num2str(curMinPixels));
         mkdir(dir{1});
 
         directory = [imagesID{type} +'/secondhalf/'];
@@ -28,15 +29,15 @@ for curMinPixels=1:length(minPixels)
             load(filename);
             for i=1:numImages
                 curImage = mask_images{i};
-                i
+                
                 %Reconstruction by erosion              
-                imTopHat = mytophat(im, SE);                
+                imTopHat = mytophat(curImage, SE);                
                 imOpen = myerode(imTopHat,SE2);
-                pixelCandidates = reconstruct(im, imOpen);
+                curImage = reconstruct(curImage, imOpen);
                 
                 mask_images{i} = curImage;  %Save the image mask
             end
-            newFilename = strcat(imagesID{type}, '/reconstruction/',num2str(curMinPixels),'/', imagesID{type}, '-alpha-', num2str(alpha), '.mat');
+            newFilename = strcat(imagesID{type}, '/tophat/',num2str(curMinPixels),'/', imagesID{type}, '-alpha-', num2str(alpha), '.mat');
             save(newFilename, 'mask_images'); %Save maskimages for current alpha
         end
 
