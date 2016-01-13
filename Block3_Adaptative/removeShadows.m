@@ -15,8 +15,8 @@ for i=1:fil
         A = in;
         B = back;
         CosTheta = dot(A,B)/(norm(A)*norm(B));
-        ThetaInDegrees = acos(CosTheta)*180/pi;
-        BD = norm(A)*cos(ThetaInDegrees);
+%         ThetaInDegrees = acos(CosTheta)*180/pi;
+        BD = norm(A)*cos(CosTheta);
         BD1 = BD/norm(B);
         
         % Compute CD. Euclidean distance between two vectors.
