@@ -49,5 +49,16 @@ for type=1:length(imagesIDs)
     alpha = 0.1:1:10;
     %Saves .mat files with results for differents rhos to be evaluated with evaluate.m
     classifyWithDifferentAlphas( alpha, bestrho, images, filenames, imagesID, numImages, means, variances, sigmas )
-    
+
+    %% OPTIONAL TASK 5. REMOVE SHADOWS
+    [images, filenames, numImages] = loadRGBframes(imagesID, imdir);
+    for i=1:numImages-1
+        disp([i '/' numImages-1]);
+        shadow_image = removeShadows(images{i},images{i+1});
+        directory = strcat('shadows/',imagesID,'/',filenames{i});
+        shadows{i} = shadow_image;
+%         imwrite(image,directory);
+        new_mask_image = removeShadowInMask(mask_images{i},shadow_image);
+        new_mask_images{i} = new_mask_image;
+    end
 end
