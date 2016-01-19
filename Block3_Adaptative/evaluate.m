@@ -5,7 +5,7 @@ close all
 
 % step2evaluate = '/'; %Only clasification
 % step2evaluate = '/fillHoles/'; %Task 1
-step2evaluate = '/reconstruction/4/'; %Task 2
+step2evaluate = '/tophat/2/'; %Task 2
 
 
 imagesID = {'highway', 'fall', 'traffic'};
