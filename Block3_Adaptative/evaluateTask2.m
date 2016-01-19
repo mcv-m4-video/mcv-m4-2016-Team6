@@ -7,7 +7,7 @@ imagesID = {'highway', 'fall', 'traffic'};
 minPixels = 1:2:11;
 
 for curMinPixels=1:length(minPixels)
-    step2evaluate = ['/reconstruction/' num2str(curMinPixels) '/']; %Task 2
+    step2evaluate = ['/opening/' num2str(curMinPixels) '/']; %Task 2
     for type=1:length(imagesID)
         directory = [imagesID{type} +'/secondhalf/'];
         imagesData = ListFiles(directory);
