@@ -1,5 +1,7 @@
 clear all; close all; dbstop error;
 
+addpath('devkit_Stereo_flow\devkit\matlab\');
+
 % KITTY
 image1 = double(imread('data_stereo_flow\training\image_0\000157_10.png'));
 image2 = double(imread('data_stereo_flow\training\image_0\000157_11.png'));
