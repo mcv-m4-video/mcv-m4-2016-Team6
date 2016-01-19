@@ -1,10 +1,12 @@
 function [ images, filenames, numImages ] = LoadFrames( imagesID, imdir )
 %LOADFRAMES 
 %   Loads images for Gaussian modeling in the training directory
+%   Input: name of sequence and directory (firsthalf or secondhalf)
 
 directory = [imagesID, imdir];
 imagesData = dir(directory);
 imagesData = imagesData(3:end);
+
 % Count the number of files
 numImages = numel(imagesData);
 

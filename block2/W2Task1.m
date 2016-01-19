@@ -1,6 +1,6 @@
 % Task 1: Gaussian distribution
 % Computes means and variances of training set, computes the best alpha
-% parameter (maximizes F1), and saves the segmentation belonging to this
+% parameter (maximizes AUC), and saves the segmentation belonging to this
 % alpha.
 
 clc

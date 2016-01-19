@@ -39,9 +39,9 @@ rho = 0:0.05:0.5;
 
 LoadAllRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas );
 
-bestrho = GetBestRho( bestalpha, rho, images, filenames, imagesID, numImages);
-disp(['Best rho for ' imagesID ' is ' bestrho]);
-
-%% SAVE RESULTS
-disp(['Saving results for rho = ' bestrho])
-SaveResults( bestrho, imagesID, numImages, 'rec', 'rho');
+% bestrho = GetBestRho( bestalpha, rho, images, filenames, imagesID, numImages);
+% disp(['Best rho for ' imagesID ' is ' bestrho]);
+% 
+% %% SAVE RESULTS
+% disp(['Saving results for rho = ' bestrho])
+% SaveResults( bestrho, imagesID, numImages, 'rec', 'rho');
