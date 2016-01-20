@@ -10,6 +10,7 @@ for i=1:numImages
     cdata = imread(strcat(imagesID, '/groundtruth/', gt_name));
 %     For every background pixel... 255, 170, 85, 50, 0
     [fil, col] = size(cdata);
+    fil = 160;col=240;
     for fil=1:fil
         for col=1:col
             if cdata(fil, col) <= 50

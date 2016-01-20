@@ -21,6 +21,10 @@ for i=1:N-1
     image1 = double(imread(files{i}));
     image2 = double(imread(files{i+1}));
     [row, col, c] = size(image1);
+    
+    %Load annotations
+    gt_name = strcat('gt', files{i+1}(20:end-4), '.png');
+    mask = imread(strcat('gt/', gt_name));
 
     % Frame difference without alignement
 %     frameDifference = sum(sum(abs(image1(sp+1:end-sp,sp+1:end-sp,:) - image2(sp+1:end-sp,sp+1:end-sp,:))));
@@ -36,10 +40,7 @@ for i=1:N-1
     dY = motion(:,:,2);
     
 
-    %Compute mean motion
-%     meandX = round(mean(dX(:))) + formerMeandX;
-%     meandY = round(mean(dY(:))) + formerMeandY;
-
+    %Compute mode motion
     meandX = mode(round(dX(:))) + formerMeandX;
     meandY = mode(round(dY(:))) + formerMeandY;
 
@@ -61,29 +62,33 @@ for i=1:N-1
 %         meandY = -sp;
 %         disp('Y Motion bigger than stabilization pixels');
 %     end
-    
+%     
     %Results inicialization
     newImage2 = imgaussfilt(image1,10);
+%     newMask = mask;
 %   newImage2 = zeros([row, col, c]);
 
     %Displace image to achieve alignement
     if(meandY > 0 && meandX > 0)
          newImage2(1:end-meandY,1:end-meandX,:) = image2(1+meandY:end,1+meandX:end,:);
+         newMask(1:end-meandY,1:end-meandX,:) = mask(1+meandY:end,1+meandX:end,:);
     elseif(meandY > 0 && meandX < 0)
          newImage2(1:end-meandY,1-meandX:end,:) = image2(1+meandY:end,1:end+meandX,:);
+         newMask(1:end-meandY,1-meandX:end,:) = mask(1+meandY:end,1:end+meandX,:);
     elseif(meandY < 0 && meandX > 0)
          newImage2(1-meandY:end,1:end-meandX,:) = image2(1:end+meandY,1+meandX:end,:);
+         newMask(1-meandY:end,1:end-meandX,:) = mask(1:end+meandY,1+meandX:end,:);
     elseif(meandY < 0 && meandX < 0)
          newImage2(1-meandY:end,1-meandX:end,:) = image2(1:end+meandY,1:end+meandX,:);
+         newMask(1-meandY:end,1-meandX:end,:) = mask(1:end+meandY,1:end+meandX,:);
     else
         newImage2 = image2;
     end
    
-%     newImage2(newImage2==0) = mean(newImage2(:));
-%     %Crop image1
-%     newImage1 = image1(sp+1:end-sp,sp+1:end-sp,:);   
+ 
 %     %Crop image2 taking into account motion
 %     newImage2 = image2(sp+1+meandY:end-sp+meandY,sp+1+meandX:end-sp+meandX,:);
+%     newMask = mask(sp+1+meandY:end-sp+meandY,sp+1+meandX:end-sp+meandX,:);
 
 
     % Frame difference affter alignement
@@ -98,6 +103,9 @@ for i=1:N-1
     name = strsplit(files{i+1},'/');
     name = ['trafficStab/' name{4}];
     imwrite(uint8(newImage2),name);
+    
+    name = ['gtEst/' gt_name];
+    imwrite(newMask,name);
 end
 
 

@@ -6,10 +6,11 @@
 clc
 clear all
 close all
+dbstop error
 
 %% CONFIG
-imagesIDs = {'highway', 'fall', 'traffic'};
-bestrhos = [0.2, 0.1, 0.2];
+imagesIDs = {'trafficStab'};
+bestrhos = [0.2, 0.2];
 
     %Already computed rhos (maybe bad approximation)
     % bestrho = 3; %Highway
