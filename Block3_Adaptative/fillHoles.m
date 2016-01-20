@@ -1,7 +1,7 @@
 function [ ] = fillHoles(  )
 connectivity = 4;
 %Loads the maks, fills the holes and saves the masks in /sequence/fillHoles
-imagesIDs = {'highway', 'fall', 'traffic'};
+imagesIDs = {'trafficStab'};
 
 for type=1:length(imagesIDs)
     
