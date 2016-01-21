@@ -1,6 +1,6 @@
 function [ bestrho ] = GetBestRho( bestalpha, rho, images, filenames, imagesID, numImages )
 
-%For each alpha load data and compare with annotations
+%For each rho load data and compare with annotations
     imagesID = {imagesID};
     
 for type=1:length(imagesID)
@@ -18,20 +18,22 @@ for type=1:length(imagesID)
         filenames = [filenames; cellstr(name)];
     end
 
-    %For each alpha load data and compare with annotations
+    %For each rho load data and compare with annotations
     gtpath = [imagesID{type} +'/gt_evaluation.mat'];
     load(gtpath);
-    for rho=1:51
+    for rho=1:length(rho)
+        rho
         pixelTP = 0; pixelTN = 0; pixelFP = 0; pixelFN = 0;
         filename = strcat(imagesID{type}, '/', imagesID{type}, '-rho-', num2str(rho), '.mat');
         load(filename);
         for i=1:numImages
+            i
             curImage = mask_images{i};
             cdata = gt_evaluation{i,1};
             % For every background pixel... 255, 170, 85, 50, 0
-            [fil, col] = size(cdata);
-            for fil=1:fil
-                for col=1:col
+            [numfil, numcol] = size(cdata);
+            for fil=1:numfil
+                for col=1:numcol
                     if cdata(fil, col) > 50 && cdata(fil, col) < 255 %Not evaluated 
                     elseif cdata(fil, col) <= 50 && curImage(fil, col) <= 50 %TN (BG)
                            pixelTN = pixelTN + 1;
@@ -59,15 +61,17 @@ for type=1:length(imagesID)
         F1(type,i) = results{type,i}{1,7};
     end
     
-    x=0:0.02:1;
+    x= 0:0.05:0.5;
 end
 
 figure;
-plot(x,F1(1,:),'r');
+plot(x,F1(1,:));
 title('F1 score');
 
 [bestF1, index] = max(F1(1,:));
 bestrho = x(index);
 
 end
+
+
 

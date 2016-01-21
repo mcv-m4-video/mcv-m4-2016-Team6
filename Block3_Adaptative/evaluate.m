@@ -5,10 +5,10 @@ close all
 
 % step2evaluate = '/'; %Only clasification
 % step2evaluate = '/fillHoles/'; %Task 1
-step2evaluate = '/tophat/2/'; %Task 2
+step2evaluate = '/reconstruction/3/'; %Task 2
 
 
-imagesID = {'highway', 'fall', 'traffic'};
+imagesID = {'traffic','trafficStab'};
 
 for type=1:length(imagesID)
     directory = [imagesID{type} +'/secondhalf/'];
@@ -91,30 +91,48 @@ end
 
 %Precision vs recall
 figure;
-plot(R(1,:),P(1,:),'r',R(2,:),P(2,:),'g',R(3,:),P(3,:),'b');
-legend([imagesID(1), imagesID(2), imagesID(3)]);
+plot(R(1,:),P(1,:),'r',R(2,:),P(2,:),'g');
+legend([imagesID(1), imagesID(2)]);
 xlabel('Recall');
 ylabel('Precision');
 
 %Area under Precision vs recall curve
-hw_AUC = trapz(P(1,:),R(1,:));
-fall_AUC = trapz(P(2,:),R(2,:));
-tff_AUC = trapz(P(3,:),R(3,:));
-mean_AUC = (hw_AUC + fall_AUC + tff_AUC) / 3;
+TF_AUC = trapz(P(1,:),R(1,:));
+TFE_AUC = trapz(P(2,:),R(2,:));
+% tff_AUC = trapz(P(3,:),R(3,:));
+% mean_AUC = (hw_AUC + fall_AUC + tff_AUC) / 3;
 
-disp(['AUC Highway: ' num2str(hw_AUC)]);
-disp(['AUC Fall: ' num2str(fall_AUC)]);
-disp(['AUC Traffic: ' num2str(tff_AUC)]);
+disp(['F1 Traffic: ' num2str(max(F1(1,:)))]);
+disp(['F1 Traffic stabilized: ' num2str(max(F1(2,:)))]);
+
+disp(['AUC Traffic: ' num2str(TF_AUC)]);
+disp(['AUC Traffic stabilized: ' num2str(TFE_AUC)]);
+% disp(['AUC Traffic: ' num2str(tff_AUC)]);
 
 figure;
-AUCS = [hw_AUC, fall_AUC, tff_AUC, mean_AUC];
-str = {'Highway'; 'Fall'; 'Traffic'; 'Mean'};
-x=[1:1:4]';
+AUCS = [TF_AUC, TFE_AUC];
+str = {'Traffic'; 'Traffic Stabilized'};
+x=[1:1:2]';
 bar(x,AUCS);
 ylabel('AUC');
 set(gca, 'XTickLabel',str, 'XTick',1:numel(str))
 for i1=1:numel(AUCS)
     text(x(i1),AUCS(i1),num2str(AUCS(i1),'%0.2f'),...
+               'HorizontalAlignment','center',...
+               'VerticalAlignment','bottom')
+end
+ylim([0 1])
+
+
+figure;
+FS = [max(F1(1,:)), max(F1(2,:))];
+str = {'Traffic'; 'Traffic Stabilized'};
+x=[1:1:2]';
+bar(x,FS);
+ylabel('F1 Score');
+set(gca, 'XTickLabel',str, 'XTick',1:numel(str))
+for i1=1:numel(FS)
+    text(x(i1),FS(i1),num2str(FS(i1),'%0.2f'),...
                'HorizontalAlignment','center',...
                'VerticalAlignment','bottom')
 end

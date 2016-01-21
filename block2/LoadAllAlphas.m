@@ -1,6 +1,6 @@
 function LoadAllAlphas( alpha, images, filenames, imagesID, numImages, means, variances, sigmas )
 %LOADALLALPHAS 
-% 
+% Saves .mat with masks for each alpha
 
 for thIndex=1:length(alpha)  % index goes from 1 to length of alpha (25) bc we want to go through each possible alpha
     %Classify pixels

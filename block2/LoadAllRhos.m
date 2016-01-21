@@ -1,12 +1,21 @@
 function LoadAllRhos( bestalpha, rho, images, filenames, imagesID, numImages, means, variances, sigmas )
-%LOADALLRHOS
-% 
 
-for thIndex=1:length(rho)  % index goes from 1 to length of alpha (25) bc we want to go through each possible alpha
+
+for thIndex=1:length(rho)  % index goes from 1 to length of alpha (11) bc we want to go through each possible alpha
+    
+    curMeans = means;
+    curVariances = variances;
+    curSigmas = sigmas;
+
+    
     %Classify pixels
+    disp(['Rho:  ' num2str(thIndex)]);
     curRho = rho(thIndex);  % counter for current alpha we're on
     [width,height] = size(images{1}); % get width and height of images
-    for i=1:numImages   %For each image
+    
+    for i=1:numImages   %For each image        
+        
+        disp(['Image ' num2str(i) ' of ' num2str(numImages)])
         gt_name = strcat('gt', filenames{i}(3:8), '.png');  % get name of ground truth img
 %         importfile(strcat(imagesID, '/groundtruth/', gt_name)); % load gt img
         cdata = imread(strcat(imagesID, '/groundtruth/', gt_name));
@@ -15,21 +24,20 @@ for thIndex=1:length(rho)  % index goes from 1 to length of alpha (25) bc we wan
         curImage = images{i};
         for m=1:width %For each pixel
             for n=1:height
-                if abs(curImage(m,n) - means(m,n)) >= (bestalpha*(sigmas(m,n)+2)) %+2 to prevent low values
+                if abs(curImage(m,n) - curMeans(m,n)) >= (bestalpha*(curSigmas(m,n)+2)) %+2 to prevent low values
                     curImage(m,n) = 255;    %pixel is Foreground
-                    
-                    means_update = means;
-                    variances_update = variances;
                 else
                     curImage(m,n) = 0;    %pixel is Background
                     
-                    means_update(m,n) = curRho*curImage(m,n)+(1-curRho)*means(m,n); % update means
-                    variances_update(m,n) = curRho*power(curImage(m,n)-means(m,n),2) + ...
-                                            (1-curRho)*power(variances(m,n),2); % update variances
+                    curMeans(m,n) = curRho * images{i}(m,n)+(1-curRho)* curMeans(m,n); % update means
+                    curVariances(m,n) = curRho*power(images{i}(m,n) - curMeans(m,n),2) + ...
+                                            (1-curRho)*curVariances(m,n); % update variances
+                    curSigmas(m,n) = sqrt(curVariances(m,n));
                 end
             end 
             mask_images{i} = curImage;  %Save the image mask
-        end        
+        end     
+        
     end
     filename = strcat(imagesID, '/', imagesID, '-rho-', num2str(thIndex), '.mat');
     save(filename, 'mask_images'); %Save maskimages for current alpha

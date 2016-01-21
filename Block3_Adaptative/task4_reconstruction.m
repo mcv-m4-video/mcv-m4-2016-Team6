@@ -5,7 +5,7 @@ minPixels = 1:2:11;
 %Loads the maks with holes filled, apply recosntruction
 %saves the masks in /sequence/reconstruction
 
-imagesID = {'highway', 'fall', 'traffic'};
+imagesID = {'trafficStab'};
 
 for curMinPixels=1:length(minPixels)
     curMinPixels

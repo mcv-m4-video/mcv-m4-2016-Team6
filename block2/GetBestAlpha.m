@@ -57,17 +57,20 @@ end
 for type=1:length(imagesID)
     for i=1:alpha
         F1(type,i) = results{type,i}{1,7};
+        P(type,i) = results{type,i}{1,5};
+        R(type,i) = results{type,i}{1,6};
     end
-    
     x=0:0.2:5;
 end
 
 figure;
-plot(x,F1(1,:),'r');
-title('F1 score');
+plot(R(1,:),P(1,:));
+legend(imagesID(1));
+xlabel('Recall');
+ylabel('Precision');
 
-[bestF1, index] = max(F1(1,:));
-bestalpha = x(index);
+auc = trapz(R(1,:),P(1,:))
+bestalpha = 0;
 
 end
 
