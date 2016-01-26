@@ -7,12 +7,12 @@ function trackSingleObject(param)
   while ~isDone(utilities.videoReader)
     frame = readFrame(utilities);
 
-    % Detect the object.
+    % Detect the ball.
     [detectedLocation, isObjectDetected, utilities] = detectObject(frame, utilities);
 
     if ~isTrackInitialized
       if isObjectDetected
-        % Initialize a track by creating a Kalman filter when the object is
+        % Initialize a track by creating a Kalman filter when the ball is
         % detected for the first time.
         initialLocation = computeInitialLocation(param, detectedLocation);
         kalmanFilter = configureKalmanFilter(param.motionModel, ...

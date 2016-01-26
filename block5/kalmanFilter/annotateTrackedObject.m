@@ -7,7 +7,7 @@ function annotateTrackedObject(frame, utilities, detectedLocation, trackedLocati
   if ~isempty(trackedLocation)
     shape = 'circle';
     region = trackedLocation;
-    region(:, 3) = 5; % use this directly to make bounding box?
+    region(:, 3) = 5;
     combinedImage = insertObjectAnnotation(combinedImage, shape, ...
       region, param.label, 'Color', 'red');
   end
