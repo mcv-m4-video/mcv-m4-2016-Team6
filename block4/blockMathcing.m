@@ -1,4 +1,4 @@
-function [motion] = blockMathcing(img, refImg, blockSize, p)
+function [motion] = blockMathcing(img_0, img_1, blockSize, p, motionType)
 % Computes Block Matching
 %
 % Input
@@ -6,11 +6,23 @@ function [motion] = blockMathcing(img, refImg, blockSize, p)
 %   refImg : The reference image
 %   blockSize : Size of the blocks
 %   p : Area of Search ((2p + 1) blocks vertically and horizontally)
+%   type : {'forward', backward}
 %
 % Ouput
 %   motion :    motion(:,:,1) = 'displacement in the X-axis'
 %               motion(:,:,2) = 'displacement in the Y-axis'
-
+if nargin > 4
+    if strcmp(motionType, 'backward')
+        refImg = img_0;
+        img = img_1;    
+    else
+        refImg = img_1;
+        img = img_0;    
+    end
+else% Default motoinType = 'forward'
+    refImg = img_1;
+    img = img_0;    
+end
 
 [row, col] = size(refImg);
 
@@ -47,9 +59,18 @@ for i = 1 : blockSize : row-blockSize+1
     end    
 end
 
-
-motion(:,:,1) = dX;
-motion(:,:,2) = dY;
+if nargin > 4
+    if strcmp(motionType, 'forward')
+        motion(:,:,1) = dX;
+        motion(:,:,2) = dY;
+    else
+        motion(:,:,1) = -1*dX;
+        motion(:,:,2) = -1*dY;
+    end
+else
+    motion(:,:,1) = dX;
+    motion(:,:,2) = dY;
+end
 
 
 
