@@ -24,13 +24,13 @@ flow1(:,:,1) = flow.Vx;
 flow1(:,:,2) = flow.Vy;
 
 %% SECOND METHOD
-im1 = double(imread('data_stereo_flow\training\image_0\000157_11.png'));
-im2 = double(imread('data_stereo_flow\training\image_0\000157_10.png'));
+im1 = double(imread('data_stereo_flow\training\image_0\000045_10.png'));
+im2 = double(imread('data_stereo_flow\training\image_0\000045_11.png'));
 uv = estimate_flow_interface(im1, im2, 'classic+nl-fast');
 
 %% EVALUATE RESULTS
 % Load the Kitty ground truth for the image
-F_gt  = flow_read('data_stereo_flow\training\flow_noc\000157_10.png');
+F_gt  = flow_read('data_stereo_flow\training\flow_noc\000045_10.png');
 % Number of valid coordinates of the groundtruth
 numValidPixels = sum(sum(F_gt(:,:,3)));
 % COnsider a fail if the magnitude is greater than TAU
@@ -55,11 +55,11 @@ figure;
 imshow(data, [])
 s = size(data);
 hold on;
-% [Nx, Ny] = size(im1);
-% xidx = 1:10:Nx;
-% yidx = 1:10:Ny;
-% [X,Y] = meshgrid(xidx,yidx);
-% quiver(Y',X',abs(px(xidx,yidx)),abs(py(xidx,yidx)));
+[Nx, Ny] = size(im1);
+xidx = 1:50:Nx;
+yidx = 1:50:Ny;
+[X,Y] = meshgrid(xidx,yidx);
+quiver(Y',X',abs(px(xidx,yidx)),abs(py(xidx,yidx)));
 quiver(px,py);
 
 px = uv(:,:,1);
@@ -68,9 +68,9 @@ figure;
 imshow(data, [])
 s = size(data);
 hold on;
-% [Nx, Ny] = size(im1);
-% xidx = 1:10:Nx;
-% yidx = 1:10:Ny;
-% [X,Y] = meshgrid(xidx,yidx);
-% quiver(Y',X',abs(px(xidx,yidx)),abs(py(xidx,yidx)));
+[Nx, Ny] = size(im1);
+xidx = 1:50:Nx;
+yidx = 1:50:Ny;
+[X,Y] = meshgrid(xidx,yidx);
+quiver(Y',X',abs(px(xidx,yidx)),abs(py(xidx,yidx)));
 quiver(px,py);
