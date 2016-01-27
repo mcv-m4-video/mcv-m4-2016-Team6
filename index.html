@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Video Surveillance for Road Traffic Monitoring by mcv-m4-video</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Video Surveillance for Road Traffic Monitoring</h1>
+      <h2 class="project-tagline">M4 Team 6</h2>
+      <a href="https://github.com/mcv-m4-video/team6" class="btn">View on GitHub</a>
+      <a href="https://github.com/mcv-m4-video/team6/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mcv-m4-video/team6/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="abstract" class="anchor" href="#abstract" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Abstract</h3>
+
+<p>The goal of this project is to learn the basic concepts and techniques related to video sequences
+processing, mainly for surveillance applications. We will focus on video sequences
+from outdoor scenarios, with the application of traffic monitoring in mind. A working prototype
+to segment cars from surveillance videos will be implemented through the project.
+The prototype will be robust againts:</p>
+
+<ul>
+<li>• Illumination changes in the video,</li>
+<li>• Noise and degraded images (such as the resulting from low bitrate coding),</li>
+<li>• Unwanted camera vibrations.</li>
+</ul>
+
+<p>The paper with the project explanation and conclusions is available here: <em>link2paper</em></p>
+
+<p>The development of the whole system has been planned in 5 weeks, as presented in detail
+in next sections.</p>
+
+<h3>
+<a id="block-1-foreground-extraction-and-optical-flow" class="anchor" href="#block-1-foreground-extraction-and-optical-flow" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block 1: Foreground Extraction and Optical Flow</h3>
+
+<p>The goals of this first block is to understand and familiarize with the programing framework
+used in this project. Furthermore, the datasets used in the project together with the
+evaluation metrics that measure the performance of the algorithms used in the project
+will be implemented and preliminary tested.
+Some functions to open and write the video sequences provided by the
+datasets ara developed. To familiarize with the ground-truth provided by the databases
+functions to evaluate the results by measuring the proposed evaluation metrics are crated.
+<a href="https://docs.google.com/presentation/d/1Qj0cXmwm_TVwlnHSyQtm_PQfXCcxlXnZ3wmaR3vlzNo/edit?usp=sharing">Slides</a></p>
+
+<h3>
+<a id="block-2-background-estimation" class="anchor" href="#block-2-background-estimation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block 2: Background estimation</h3>
+
+<p>The goal of this week is to model the background pixels of a video sequence using a simple
+statistical model. Firstly, a single gaussian model per pixel will be used to model the
+background pixels. The statistical model will be used to preliminary classify foreground
+pixels in the sequence. The simple model will be compared with more complex ones such
+as the Stauffer and Grimson (provided in the programming framework).
+<a href="https://docs.google.com/presentation/d/1yNvwNfPo-9mqI6dKUcYNCdAbrtpuFSmzSigla5rFnwc/edit?usp=sharing">Slides</a></p>
+
+<h3>
+<a id="block-3-foreground-segmentation" class="anchor" href="#block-3-foreground-segmentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block 3: Foreground segmentation</h3>
+
+<p>The goal for this block will be to implement a robust foreground segmentation algorithm.
+The statistical model implemented in the previous week is the baseline which must be
+improved during this week. Two basic strategies are to applied: hole filling and area
+filtering. In addition, a strategy to remove the shadows of the cars can also improve the
+final performance.
+<a href="https://docs.google.com/presentation/d/1JlhSoiSlHZesawOfloyxVH8zj-4DDlbqbWWsluXjzd0/edit?usp=sharing">Slides</a></p>
+
+<h3>
+<a id="block-4-video-stabilization" class="anchor" href="#block-4-video-stabilization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block 4: Video Stabilization</h3>
+
+<p>Surveillance cameras are often placed on physical support that can vibrate because of
+weather conditions or nearby transportations. This camera jitering affects the video sequence,
+introducing an motion on both foreground objects and background. As a result,
+analysis algorithms that depend from the extraction and tracking of foreground object can
+be contaminated by the camera motion. This module focuses in the estimation of such
+camera motion and existing techniques to achieve a virtual stabilization of the camera.
+<a href="https://docs.google.com/presentation/d/1ep_CthNgTZLDjZ3hVDmaFhX_fzuRhaz44Ae1hs2_DVg/edit?usp=sharing">Slides</a></p>
+
+<h3>
+<a id="block-5-region-tracking" class="anchor" href="#block-5-region-tracking" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block 5: Region tracking</h3>
+
+<p>The goal of this assignment is the implementation of a tracking system to uniquely identify
+the objects in the scene. This tracking will allow counting the amount of vehicles and
+obtain an approximate estimation of their speed.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mcv-m4-video/team6">Video Surveillance for Road Traffic Monitoring</a> is maintained by <a href="https://github.com/mcv-m4-video">mcv-m4-video</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
