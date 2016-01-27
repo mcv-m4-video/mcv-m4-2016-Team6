@@ -1,7 +1,9 @@
 function [centroids, bboxes, mask] = detectObjects(frame,obj)
 
     % Detect foreground.
-    mask = obj.detector.step(frame);
+%     mask = obj.detector.step(frame);
+    mask = mydetector(frame, bestalpha, bestrho, means, variances, sigmas);
+    mask = logical(mask);
 
     
     % Apply morphological operations to remove noise and fill in holes.
