@@ -1,4 +1,4 @@
-function [centroids, bboxes, mask] = detectObjects(frame,obj)
+function [centroids, bboxes, mask] = detectObjects(frame, obj, bestalpha, bestrho, means, variances, sigmas)
 
     % Detect foreground.
 %     mask = obj.detector.step(frame);
@@ -9,11 +9,11 @@ function [centroids, bboxes, mask] = detectObjects(frame,obj)
     % Apply morphological operations to remove noise and fill in holes.
     %open + close + imfill
 %     mask = imopen(mask, strel('rectangle', [3,3]));
-%     mask = imclose(mask, strel('rectangle', [15, 15])); 
+%     mask = imclose(mask, strel('rectangle', [10, 10])); 
 %     mask = imfill(mask, 'holes');
     
     %imfill + reconstrucition by erosion
-    mask = imfill(mask, 4, 'holes');
+    mask = imfill(mask, 8, 'holes');
     marker = myerode(mask,ones(5,5));
     mask = reconstruct(mask, marker);
 

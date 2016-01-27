@@ -1,4 +1,4 @@
-function multiObjectTracking()
+function multiObjectTracking(bestalpha, bestrho, means, variances, sigmas)
 
 % Create System objects used for reading video, detecting moving objects,
 % and displaying the results.
@@ -13,7 +13,7 @@ while ~isDone(obj.reader)
     
     frame = readFrame(obj);
     
-    [centroids, bboxes, mask] = detectObjects(frame,obj);
+    [centroids, bboxes, mask] = detectObjects(frame, obj, bestalpha, bestrho, means, variances, sigmas);
     
     tracks = predictNewLocationsOfTracks(tracks);
     
