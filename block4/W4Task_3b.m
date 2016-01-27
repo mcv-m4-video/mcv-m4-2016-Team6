@@ -2,12 +2,12 @@
 clear all; close all; 
 
 %Stabilization Pixels: Max displacement
-% sp = 20;
+sp = 20;
 
 addpath('devkit_Stereo_flow\devkit\matlab\');
 
 %Read traffic sequence
-directory = '../traffic/input/';
+directory = '../traffic_full/';
 [files, N] = ListFiles(directory);
 
 formerMeandX = 0;
@@ -23,8 +23,8 @@ for i=1:N-1
     [row, col, c] = size(image1);
     
     %Load annotations
-    gt_name = strcat('gt', files{i+1}(20:end-4), '.png');
-    mask = imread(strcat('gt/', gt_name));
+%     gt_name = strcat('gt', files{i+1}(20:end-4), '.png');
+%     mask = imread(strcat('gt/', gt_name));
 
     % Frame difference without alignement
 %     frameDifference = sum(sum(abs(image1(sp+1:end-sp,sp+1:end-sp,:) - image2(sp+1:end-sp,sp+1:end-sp,:))));
@@ -46,48 +46,48 @@ for i=1:N-1
 
     disp(['Displacement -->   X:' num2str(meandX) '   |    Y: ' num2str(meandY)]);
     
-%     if meandX > sp
-%         meandX = sp;
-%         disp('X Motion bigger than stabilization pixels');
-%     end
-%     if meandY > sp
-%         meandY = sp;
-%         disp('Y Motion bigger than stabilization pixels');
-%     end
-%     if meandX < -sp
-%         meandX = -sp;
-%         disp('X Motion bigger than stabilization pixels');
-%     end
-%     if meandY < -sp
-%         meandY = -sp;
-%         disp('Y Motion bigger than stabilization pixels');
-%     end
+    if meandX > sp
+        meandX = sp;
+        disp('X Motion bigger than stabilization pixels');
+    end
+    if meandY > sp
+        meandY = sp;
+        disp('Y Motion bigger than stabilization pixels');
+    end
+    if meandX < -sp
+        meandX = -sp;
+        disp('X Motion bigger than stabilization pixels');
+    end
+    if meandY < -sp
+        meandY = -sp;
+        disp('Y Motion bigger than stabilization pixels');
+    end
 %     
     %Results inicialization
-    newImage2 = imgaussfilt(image1,10);
+%     newImage2 = imgaussfilt(image1,10);
 %     newMask = mask;
 %   newImage2 = zeros([row, col, c]);
-
-    %Displace image to achieve alignement
-    if(meandY > 0 && meandX > 0)
-         newImage2(1:end-meandY,1:end-meandX,:) = image2(1+meandY:end,1+meandX:end,:);
-         newMask(1:end-meandY,1:end-meandX,:) = mask(1+meandY:end,1+meandX:end,:);
-    elseif(meandY > 0 && meandX < 0)
-         newImage2(1:end-meandY,1-meandX:end,:) = image2(1+meandY:end,1:end+meandX,:);
-         newMask(1:end-meandY,1-meandX:end,:) = mask(1+meandY:end,1:end+meandX,:);
-    elseif(meandY < 0 && meandX > 0)
-         newImage2(1-meandY:end,1:end-meandX,:) = image2(1:end+meandY,1+meandX:end,:);
-         newMask(1-meandY:end,1:end-meandX,:) = mask(1:end+meandY,1+meandX:end,:);
-    elseif(meandY < 0 && meandX < 0)
-         newImage2(1-meandY:end,1-meandX:end,:) = image2(1:end+meandY,1:end+meandX,:);
-         newMask(1-meandY:end,1-meandX:end,:) = mask(1:end+meandY,1:end+meandX,:);
-    else
-        newImage2 = image2;
-    end
+% 
+%     Displace image to achieve alignement
+%     if(meandY > 0 && meandX > 0)
+%          newImage2(1:end-meandY,1:end-meandX,:) = image2(1+meandY:end,1+meandX:end,:);
+%          newMask(1:end-meandY,1:end-meandX,:) = mask(1+meandY:end,1+meandX:end,:);
+%     elseif(meandY > 0 && meandX < 0)
+%          newImage2(1:end-meandY,1-meandX:end,:) = image2(1+meandY:end,1:end+meandX,:);
+%          newMask(1:end-meandY,1-meandX:end,:) = mask(1+meandY:end,1:end+meandX,:);
+%     elseif(meandY < 0 && meandX > 0)
+%          newImage2(1-meandY:end,1:end-meandX,:) = image2(1:end+meandY,1+meandX:end,:);
+%          newMask(1-meandY:end,1:end-meandX,:) = mask(1:end+meandY,1+meandX:end,:);
+%     elseif(meandY < 0 && meandX < 0)
+%          newImage2(1-meandY:end,1-meandX:end,:) = image2(1:end+meandY,1:end+meandX,:);
+%          newMask(1-meandY:end,1-meandX:end,:) = mask(1:end+meandY,1:end+meandX,:);
+%     else
+%         newImage2 = image2;
+%     end
    
  
 %     %Crop image2 taking into account motion
-%     newImage2 = image2(sp+1+meandY:end-sp+meandY,sp+1+meandX:end-sp+meandX,:);
+    newImage2 = image2(sp+1+meandY:end-sp+meandY,sp+1+meandX:end-sp+meandX,:);
 %     newMask = mask(sp+1+meandY:end-sp+meandY,sp+1+meandX:end-sp+meandX,:);
 
 
@@ -101,11 +101,11 @@ for i=1:N-1
 
     %Save aligned image
     name = strsplit(files{i+1},'/');
-    name = ['trafficStab/' name{4}];
+    name = ['atpStab/' name{3}];
     imwrite(uint8(newImage2),name);
     
-    name = ['gtEst/' gt_name];
-    imwrite(newMask,name);
+%     name = ['gtEst/' gt_name];
+%     imwrite(newMask,name);
 end
 
 

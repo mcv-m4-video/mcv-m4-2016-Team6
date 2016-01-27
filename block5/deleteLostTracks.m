@@ -14,7 +14,12 @@ function tracks = deleteLostTracks(tracks)
     % Find the indices of 'lost' tracks.
     lostInds = (ages < ageThreshold & visibility < 0.6) | ...
         [tracks(:).consecutiveInvisibleCount] >= invisibleForTooLong;
-
+    
+    % Compute mean speed of tracks to be deleted
+    if sum(lostInds) > 0
+        computeAndStoreSpeed(tracks(lostInds));
+    end
+    
     % Delete lost tracks.
     tracks = tracks(~lostInds);
 end

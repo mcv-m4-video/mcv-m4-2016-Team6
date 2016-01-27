@@ -21,6 +21,9 @@ function tracks = updateAssignedTracks(tracks,centroids,bboxes,assignments)
         tracks(trackIdx).totalVisibleCount = ...
             tracks(trackIdx).totalVisibleCount + 1;
         tracks(trackIdx).consecutiveInvisibleCount = 0;
+        
+        %Update current centroid
+        tracks(trackIdx).curCentroid = centroid;
     end
 end
 
