@@ -12,6 +12,10 @@ global times
 distances = [];
 times = [];
 
+global means
+global variances
+global sigmas
+
 %Variables to train sequence for background subtraction 
 numFrames = 200; % TODO: apply this
 imagesID = 'highway';
@@ -22,6 +26,6 @@ bestrho = 0.2;
 
 %% RUN MULTITRACKING
 
-multiObjectTracking(bestalpha, bestrho, means, variances, sigmas);
+multiObjectTracking(bestalpha, bestrho);
 
 saveSpeeds(); %Saves speed data to 'speeds.txt' file

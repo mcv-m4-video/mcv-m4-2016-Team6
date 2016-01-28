@@ -1,11 +1,15 @@
-function mask = mydetector(frame, bestalpha, bestrho, means, variances, sigmas)
+function mask = mydetector(frame, bestalpha, bestrho)
+
+global means
+global variances
+global sigmas
 
 curMeans = means;
 curVariances = variances;
 curSigmas = sigmas;
 
 frame = rgb2gray(frame);
-frame = uint8(frame*255);
+frame = double(frame*255);
 [width,height] = size(frame); % get width and height of image
 
 curImage = frame;
@@ -25,5 +29,9 @@ for m=1:width %For each pixel
 end
 
 mask = curImage;
+
+means = curMeans;
+variances = curVariances;
+sigmas = curSigmas;
 
 end
