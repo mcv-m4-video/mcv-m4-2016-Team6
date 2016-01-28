@@ -4,7 +4,7 @@ function means = ComputeMeans(imagesID, images, filenames, numImages )
 
 means =zeros(size(images{1}));
 for i=1:numImages
-    curImage = images{1,i};
+    curImage = images{i};
     gt_name = strcat('gt', filenames{i}(3:8), '.png');
 %     importfile(strcat(imagesID, '/groundtruth/', gt_name));
     cdata = imread(strcat(imagesID, '/groundtruth/', gt_name));

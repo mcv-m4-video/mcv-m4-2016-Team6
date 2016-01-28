@@ -8,12 +8,12 @@ function [centroids, bboxes, mask] = detectObjects(frame, obj, bestalpha, bestrh
     
     % Apply morphological operations to remove noise and fill in holes.
     %open + close + imfill
-%     mask = imopen(mask, strel('rectangle', [3,3]));
+%     mask = imopen(mask, strel('rectangle', [5,5]));
 %     mask = imclose(mask, strel('rectangle', [10, 10])); 
 %     mask = imfill(mask, 'holes');
     
-    %imfill + reconstrucition by erosion
-    mask = imfill(mask, 8, 'holes');
+    %imfill + reconstruction by erosion
+    mask = imfill(mask, 18, 'holes');
     marker = myerode(mask,ones(5,5));
     mask = reconstruct(mask, marker);
 
