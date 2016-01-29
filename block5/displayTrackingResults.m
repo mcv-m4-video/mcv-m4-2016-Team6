@@ -1,4 +1,7 @@
-function displayTrackingResults(obj,tracks,frame,bboxes,mask)
+function tracks = displayTrackingResults(obj,tracks,frame,bboxes,mask)
+
+global carCount
+
     % Convert the frame and the mask to uint8 RGB.
     frame = im2uint8(frame);
     mask = uint8(repmat(mask, [1, 1, 3])) .* 255;
@@ -20,12 +23,16 @@ function displayTrackingResults(obj,tracks,frame,bboxes,mask)
             bboxes = cat(1, reliableTracks.bbox);
 
             % Get ids.
-            ids = int32([reliableTracks(:).id]);
-
+%             disp(reliableTracks(:).id)
+%             disp(reliableTracks(:).speed)
+            labels = {};
+            for i=1:length(reliableTracks)
+               labels{i} = strcat([num2str(round(reliableTracks(i).id2print)), ' - ', num2str(round(reliableTracks(i).speed)) , 'km/h']);
+            end
+            
             % Create labels for objects indicating the ones for 
             % which we display the predicted rather than the actual 
             % location.
-            labels = cellstr(int2str(ids'));
             predictedTrackInds = ...
                 [reliableTracks(:).consecutiveInvisibleCount] > 0;
             isPredicted = cell(size(labels));
@@ -41,8 +48,13 @@ function displayTrackingResults(obj,tracks,frame,bboxes,mask)
                 bboxes, labels);
         end
     end
-
+    
+%     global count
     % Display the mask and the frame.
     obj.maskPlayer.step(mask);        
     obj.videoPlayer.step(frame);
+%     imwrite(frame,strcat('frame',num2str(count),'.jpg'));
+%     imwrite(mask,strcat('mask',num2str(count),'.jpg'));
+%     count = count +1;
+    
 end

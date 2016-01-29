@@ -3,7 +3,7 @@ function tracks = deleteLostTracks(tracks)
         return;
     end
 
-    invisibleForTooLong = 20;
+    invisibleForTooLong = 4; %20
     ageThreshold = 8;
 
     % Compute the fraction of the track's age for which it was visible.

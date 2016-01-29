@@ -2,6 +2,7 @@ function multiObjectTracking(bestalpha, bestrho)
 
 % Create System objects used for reading video, detecting moving objects,
 % and displaying the results.
+disp('Tracking...')
 obj = setupSystemObjects();
 
 tracks = initializeTracks(); % Create an empty array of tracks.
@@ -28,8 +29,14 @@ while ~isDone(obj.reader)
     
     [tracks,nextId] = createNewTracks(tracks,nextId,centroids,bboxes,unassignedDetections);
     
+    tracks = computeInstantSpeed(tracks);
+    
+    tracks = setId2Print(tracks);
+    
     displayTrackingResults(obj,tracks,frame,bboxes,mask);
 end
 
+    %Save the data of the alive tracks
+    computeAndStoreSpeed(tracks);
 end
 

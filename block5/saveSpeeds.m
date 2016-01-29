@@ -10,7 +10,8 @@ function [  ] = saveSpeeds(  )
 global distances
 global times
 
-pixels2meters = 4.5/16;
+% pixels2meters = 4.5/16;
+pixels2meters = 5/12;
 frames2seconds = 1/20;
 realDistances = distances * pixels2meters;
 realTimes = times * frames2seconds;

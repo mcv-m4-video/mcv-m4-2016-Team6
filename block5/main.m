@@ -16,11 +16,17 @@ global means
 global variances
 global sigmas
 
+global carCount
+
+global count 
+count = 10000;
+
 %Variables to train sequence for background subtraction 
 numFrames = 200; % TODO: apply this
 imagesID = 'highway';
 bestalpha = 2;
 bestrho = 0.2;
+carCount = 0;
 
 [means, variances, sigmas] = initializeSegmentation(numFrames, imagesID);
 

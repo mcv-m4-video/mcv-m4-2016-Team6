@@ -11,7 +11,7 @@ function [assignments, unassignedTracks, unassignedDetections] = ...
     end
 
     % Solve the assignment problem.
-    costOfNonAssignment = 20;
+    costOfNonAssignment = 20; 
     [assignments, unassignedTracks, unassignedDetections] = ...
         assignDetectionsToTracks(cost, costOfNonAssignment);
 end
