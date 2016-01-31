@@ -34,4 +34,4 @@ carCount = 0;
 
 multiObjectTracking(bestalpha, bestrho);
 
-saveSpeeds(); %Saves speed data to 'speeds.txt' file
+saveSpeeds('speeds.txt'); %Saves speed data to 'speeds.txt' file

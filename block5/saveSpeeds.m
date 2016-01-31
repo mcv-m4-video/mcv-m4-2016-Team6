@@ -1,4 +1,4 @@
-function [  ] = saveSpeeds(  )
+function [  ] = saveSpeeds( filename )
 %Computes cars mean speed and saves it to a file.
 
 %DISTANCE
@@ -17,7 +17,7 @@ realDistances = distances * pixels2meters;
 realTimes = times * frames2seconds;
 speeds = (realDistances ./ realTimes).* 3.6;
 
-fileID = fopen('speeds.txt','w');
+fileID = fopen(filename,'w');
 fprintf(fileID,'%s %s %s\n','Distance(m)','Time(s)','Speed(Km/h)');
 for i=1:length(speeds)
     fprintf(fileID,'%6.2f %6.2f %6.2f \n',realDistances(i),realTimes(i),speeds(i));
