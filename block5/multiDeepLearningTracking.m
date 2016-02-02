@@ -8,8 +8,9 @@ obj = setupDLTSystemObjects();
 
 tracks = initializeDLTracks(); % Create an empty array of tracks.
 
+XMIN = 20;
+XMAX = 240;
 doTrack = 1;
-MUTEX = 0;
 duration = 0; tic;
 nextId = 1; % ID of the next track
 nextFrame = 1;
@@ -22,9 +23,13 @@ while ~isDone(obj.reader)
     msg = sprintf('\n\n****************   FRAME ID = %d   ****************\n', nextFrame);
     disp(msg);    
 
-    % Detect Objects in new frame
-    [centroids, bboxes, mask] = detectObjects(frame, obj, bestalpha, bestrhos);     % Detector implemented in MCV_2016
-%     [centroids, bboxes, mask] = objectDetector(frame);                              % Stauffer&Grimson Implementation
+%     % Detect Objects only in a part of the frame
+%     [~, bboxes, mask] = detectObjects(frame, obj, bestalpha, bestrhos);     % Detector implemented in MCV_2016 (Performs better)
+
+    % Consider only BBoxes within a specific region
+    [~, bboxes, mask] = objectDetector(frame, bestalpha, bestrhos, XMIN, XMAX);
+    
+    %     [centroids, bboxes, mask] = objectDetector(frame);                              % Stauffer&Grimson Implementation
 
     msg = sprintf('OBJECTS DETECTED = %d\n', size(bboxes,1));
     disp(msg);
@@ -57,6 +62,37 @@ while ~isDone(obj.reader)
 end
 
 
+function [centroids, bboxes, mask] = objectDetector(frame, bestalpha, bestrhos, XMIN, XMAX)
+
+    % Detect foreground.
+%     mask = obj.detector.step(frame);
+    mask = mydetector(frame, bestalpha, bestrhos);
+    mask = logical(mask);
+    
+    % Only consider Bounding Boxes from a region of the image
+    mask(1:XMIN,:) = zeros(XMIN, 320);
+    
+    mask(XMAX:240,:) = zeros(240-XMAX+1, 320);
+    
+    % Apply morphological operations to remove noise and fill in holes.
+    %open + close + imfill
+    
+    mask = imopen(mask, strel('rectangle', [3,3]));
+    mask = imclose(mask, strel('rectangle', [5, 5]));
+    mask = imfill(mask, 'holes');
+    mask = imerode(mask, strel('rectangle', [5, 10]));
+    
+
+    % Perform blob analysis to find connected components.
+    [~, centroids, bboxes] = obj.blobAnalyser.step(mask);
+    
+    msg = '';
+    for i=1:size(bboxes, 1)
+    msg =sprintf('%s\tBbox(%d) = [%.3f, %.3f, %.3f, %.3f]\n', msg, i, bboxes(i,1), bboxes(i,2), bboxes(i,3), bboxes(i,4));
+    end
+    disp(msg);
+end
+
 
 
 %% Find which BBoxes are out of image
@@ -68,7 +104,7 @@ end
         updatedTracks = 0;
         for i = 1:size(tracks(:), 1)
             if(tracks(i).active == 1)
-                bbox = tracks(i).bbox
+                bbox = tracks(i).bbox;
                 if(( bbox(1)<0 )|| (bbox(2)+bbox(4))>240)
                     tracks(i).active = 0;
                     msg = sprintf('\ttrack(%d) : [%.3f, %.3f, %.3f, %.3f]  -->  DEACTIVATED\n', i, ...
@@ -185,7 +221,7 @@ end
         end
 
         trackedBboxes = reshape([tracks(:).bbox], 4, [])';
-        overlapThres = 0.3;
+        overlapThres = 0.2;
         
         nAssTracks = size(trackedBboxes, 1);
         nUnassTracks = size(bboxes, 1);
@@ -269,14 +305,14 @@ end
                 
         % Indicate whether to use GPU in computation.
         global useGpu;
-        useGpu = false;
+        useGpu = true;
         
         % Paths to the functions containing the DNN implementations
         addpath('DLTcode\DLT\');
-        addpath('DLT\affineUtility\');
-        addpath('DLT\drawUtility\');
-        addpath('imageUtility\');
-        addpath('DLT\NN\');
+        addpath('DLTcode\DLT\affineUtility\');
+        addpath('DLTcode\DLT\drawUtility\');
+        addpath('DLTcode\DLT\imageUtility\');
+        addpath('DLTcode\DLT\NN\');
         
         
         % Initialize Video I/O
@@ -291,28 +327,10 @@ end
         obj.videoPlayer = vision.VideoPlayer('Position', [20, 400, 700, 400]);
         obj.maskPlayer = vision.VideoPlayer('Position', [740, 400, 700, 400]);
         
-        % Create System objects for foreground detection and blob analysis
-        
-        % The foreground detector is used to segment moving objects from
-        % the background. It outputs a binary mask, where the pixel value
-        % of 1 corresponds to the foreground and the value of 0 corresponds
-        % to the background. 
-        
-        obj.detector = vision.ForegroundDetector('NumGaussians', 3, ...
-            'NumTrainingFrames', 40, 'MinimumBackgroundRatio', 0.4);
-        
-        % Connected groups of foreground pixels are likely to correspond to moving
-        % objects.  The blob analysis System object is used to find such groups
-        % (called 'blobs' or 'connected components'), and compute their
-        % characteristics, such as area, centroid, and the bounding box.
-        
-%         obj.blobAnalyser = vision.BlobAnalysis('BoundingBoxOutputPort', true, ...
-%             'AreaOutputPort', true, 'CentroidOutputPort', true, ...
-%             'MinimumBlobArea', 900);
-
+        % Create System objects for blob analysis
         obj.blobAnalyser = vision.BlobAnalysis('BoundingBoxOutputPort', true, ...
             'AreaOutputPort', true, 'CentroidOutputPort', true, ...
-            'MinimumBlobArea', 400);
+            'MinimumBlobArea', 500, 'MaximumBlobArea', 750);
 
     end
 
@@ -338,30 +356,30 @@ end
         frame = obj.reader.step();
     end
 
-% Detect Objects
-    function [centroids, bboxes, mask] = objectDetector(frame)
-        
-        % Detect foreground.
-        mask = obj.detector.step(frame);
-        
-        % Apply morphological operations to remove noise and fill in holes.
+% % Detect Objects
+%     function [centroids, bboxes, mask] = objectDetector(frame)
+%         
+%         % Detect foreground.
+%         mask = obj.detector.step(frame);
+%         
+%         % Apply morphological operations to remove noise and fill in holes.
 %         mask = imopen(mask, strel('rectangle', [3,3]));
 %         mask = imclose(mask, strel('rectangle', [5, 7])); 
 %         mask = imfill(mask, 'holes');
-
-    mask = imopen(mask, strel('rectangle', [5,5]));
-    mask = imclose(mask, strel('rectangle', [10, 10])); 
-    mask = imfill(mask, 'holes');
-        
-        % Perform blob analysis to find connected components.
-        [~, centroids, bboxes] = obj.blobAnalyser.step(mask);
-        
-        msg = '';
-        for i=1:size(bboxes, 1)
-            msg =sprintf('%s\tBbox(%d) = [%.3f, %.3f, %.3f, %.3f]\n', msg, i, bboxes(i,1), bboxes(i,2), bboxes(i,3), bboxes(i,4));
-        end
-        disp(msg);
-    end
+% 
+% %     mask = imopen(mask, strel('rectangle', [5,5]));
+% %     mask = imclose(mask, strel('rectangle', [10, 10])); 
+% %     mask = imfill(mask, 'holes');
+%         
+%         % Perform blob analysis to find connected components.
+%         [~, centroids, bboxes] = obj.blobAnalyser.step(mask);
+%         
+%         msg = '';
+%         for i=1:size(bboxes, 1)
+%             msg =sprintf('%s\tBbox(%d) = [%.3f, %.3f, %.3f, %.3f]\n', msg, i, bboxes(i,1), bboxes(i,2), bboxes(i,3), bboxes(i,4));
+%         end
+%         disp(msg);
+%     end
 
 
 
